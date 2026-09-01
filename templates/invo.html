@@ -461,25 +461,34 @@
                                     Void
                                 </button>
 
+{% elif invoice.status == "Paid" %}
 
-                            {% elif invoice.status == "Paid" %}
+    {% if invoice.credit_note %}
 
-                                {% if invoice.credit_note %}
+        <span class="text-success">
+            Credit Note Added
+        </span>
 
-                                    <span class="text-success">
-                                        Credit Note Added
-                                    </span>
+    {% else %}
 
-                                {% else %}
+        {% if not is_account_manager %}
 
-                                    <button type="button"
-                                            class="btn btn-sm btn1"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#creditModal{{ invoice.id }}">
-                                        Credit Note
-                                    </button>
+            <button type="button"
+                    class="btn btn-sm btn1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#creditModal{{ invoice.id }}">
+                Credit Note
+            </button>
 
-                                {% endif %}
+        {% else %}
+
+            <span>
+                —
+            </span>
+
+        {% endif %}
+
+    {% endif %}
 
 
                             {% elif invoice.status == "Void" %}
@@ -708,31 +717,22 @@
                        href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.next_page_number }}">
                         Next
                     </a>
-
                 </li>
-
                 {% endif %}
-
             </ul>
-
         </nav>
 
         {% endif %}
 
-
         {% if invoices.paginator %}
 
-        <p class="text-center">
-            Total matches:
-            {{ invoices.paginator.count }}
-        </p>
+        <p class="text-center">Total matches:{{ invoices.paginator.count }}</p>
 
         {% endif %}
 
     </div>
 
 </main>
-
 
 <!-- Sidebar Script -->
 <script>
