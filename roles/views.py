@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from .models import Subscription
+
 
 
 # -------------------------- LOGIN ----------------------------------------
@@ -10,7 +13,7 @@ def login(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        # Find user using email
+        # Find the user using their email
         user_obj = User.objects.filter(email=email).first()
 
         if user_obj:
@@ -43,11 +46,29 @@ def login(request):
 
 # -------------------------- ADMIN DASHBOARD -------------------------------
 
+@login_required
 def admin_dash(request):
+
+    if not request.user.is_superuser:
+        return redirect("login")
+
     return render(request, "admin_dash.html")
 
 
-# -------------------------- ACCOUNT MANAGER DASHBOARD ---------------------
+# -------------------------- ACCOUNT MANAGER DASHBOARD ----------------------
 
+@login_required
 def acc_man(request):
+
+    if not request.user.groups.filter(name="Account Manager").exists():
+        return redirect("login")
+
     return render(request, "acc_man.html")
+
+
+# -------------------------- LOGOUT ----------------------------------------
+
+def logout(request):
+    auth_logout(request)
+    return redirect("login")
+
