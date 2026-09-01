@@ -151,6 +151,12 @@ def invoice_list(request):
         'credit_note'
     ).all()
 
+# -----------------------------ROLE-BASED ACCESS------------------------------------------
+
+    if request.user.groups.filter(name='Account Manager').exists():
+        invoices = invoices.filter(     # Account Manager sees only invoices belonging to subscriptions they own
+            subscription__owner=request.user
+    )
     # ---------------- SEARCH ----------------
 
     search = request.GET.get('search', '').strip()
@@ -221,12 +227,18 @@ def invoice_list(request):
         groups__name='Account Manager'
     ).distinct()
 
+    #change according to manager
+    is_account_manager = request.user.groups.filter(
+        name='Account Manager'
+    ).exists()
+#
     return render(
         request,
         'invo.html',
         {
             'invoices': invoices,
             'account_managers': account_managers,
+            'is_account_manager': is_account_manager,
         }
     )
 
@@ -237,6 +249,12 @@ def add_invoice(request):
     subscriptions = Subscription.objects.filter(
         is_archived=False
     ).select_related('owner')
+
+    # Account Manager can only use their own subscriptions
+    if request.user.groups.filter(name='Account Manager').exists():
+        subscriptions = subscriptions.filter(
+            owner=request.user
+        )
 
     if request.method == 'POST':
 
@@ -251,6 +269,15 @@ def add_invoice(request):
             id=subscription_id,
             is_archived=False
         )
+
+        # Account Manager can only create invoices for subscriptions they own
+        if request.user.groups.filter(name='Account Manager').exists():
+            if subscription.owner != request.user:
+                messages.error(
+                    request,
+                    'You do not have permission to create an invoice for this subscription.'
+                )
+                return redirect('invoice_list')
 
         invoice = Invoice.objects.create(
             subscription=subscription,
@@ -289,10 +316,26 @@ def edit_invoice(request, invoice_id):
         id=invoice_id
     )
 
+    # Account Manager can only edit their own invoices
+    if request.user.groups.filter(name='Account Manager').exists():
+        if invoice.subscription.owner != request.user:
+            messages.error(
+                request,
+                'You do not have permission to edit this invoice.'
+            )
+            return redirect('invoice_list')
+
     subscriptions = Subscription.objects.filter(
         is_archived=False
     ).select_related('owner')
 
+
+    #change according to manager
+    if request.user.groups.filter(name='Account Manager').exists():
+        subscriptions = subscriptions.filter(
+            owner=request.user
+        )
+#
     if invoice.status == 'Paid':
         messages.error(
             request,
@@ -381,6 +424,15 @@ def issue_invoice(request, invoice_id):
         id=invoice_id
     )
 
+    #change according to manager
+    if request.user.groups.filter(name='Account Manager').exists():
+        if invoice.subscription.owner != request.user:
+            messages.error(
+                request,
+                'You do not have permission to issue this invoice.'
+            )
+            return redirect('invoice_list')
+#
     if request.method != 'POST':
         return redirect('invoice_list')
 
@@ -427,7 +479,15 @@ def mark_invoice_paid(request, invoice_id):
         Invoice,
         id=invoice_id
     )
-
+    #change according to manager
+    if request.user.groups.filter(name='Account Manager').exists():
+        if invoice.subscription.owner != request.user:
+            messages.error(
+                request,
+                'You do not have permission to mark this invoice as paid.'
+            )
+            return redirect('invoice_list')
+    #
     if request.method != 'POST':
         return redirect('invoice_list')
 
@@ -465,6 +525,15 @@ def void_invoice(request, invoice_id):
         Invoice,
         id=invoice_id
     )
+    #change according to manager
+    if request.user.groups.filter(name='Account Manager').exists():
+        if invoice.subscription.owner != request.user:
+            messages.error(
+                request,
+                'You do not have permission to void this invoice.'
+            )
+            return redirect('invoice_list')
+    #
 
     if request.method != 'POST':
         return redirect('invoice_list')
@@ -562,4 +631,3 @@ def create_credit_note(request, invoice_id):
     )
 
     return redirect('invoice_list')
-
