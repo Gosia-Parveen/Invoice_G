@@ -1,0 +1,293 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>Invoice</title>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 110vh;
+            width: 100%;
+            background: linear-gradient(to left, #faec87, #fcba95);
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container1 {
+
+            width: 530px;
+            min-height: 350px;
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background-color: #fa7301;
+            padding: 28px 20px;
+
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+            color: white;
+        }
+
+        .btn1 {
+
+            height: 50px;
+            width: 200px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-color: #f3b900;
+            color: black;
+
+        }
+
+        .btn1:hover {
+
+            background-color: #b50001;
+            color: white;
+
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div class="container1">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- TITLE -->
+            <h2 style="text-align:center;">
+
+                {% if invoice %}
+                    Edit Invoice
+                {% else %}
+                    New Invoice
+                {% endif %}
+
+            </h2>
+
+
+            <!-- INVOICE NUMBER -->
+            <label class="form-label">
+                Invoice No.
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   value="{{ invoice.invoice_number|default:'Automatically Generated' }}"
+                   readonly>
+
+
+            <!-- SUBSCRIPTION -->
+            <label for="subscription" class="form-label">
+                Subscription
+            </label>
+
+            <select class="form-control"
+                    id="subscription"
+                    name="subscription"
+                    {% if invoice and invoice.status != "Draft" %}disabled{% endif %}
+                    required>
+
+                <option value="">
+                    Select Subscription
+                </option>
+
+                {% for subscription in subscriptions %}
+
+                    <option value="{{ subscription.id }}"
+                            data-customer="{{ subscription.customer_name }}"
+                            data-email="{{ subscription.billing_email }}"
+                            {% if invoice.subscription_id == subscription.id %}selected{% endif %}>
+
+                        {{ subscription.plan }} - {{ subscription.customer_name }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- CUSTOMER NAME -->
+            <label for="customername" class="form-label">
+                Customer Name
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="customername"
+                   value="{{ invoice.subscription.customer_name|default:'' }}"
+                   readonly>
+
+
+            <!-- BILLING EMAIL -->
+            <label for="billingemail" class="form-label">
+                Billing Email
+            </label>
+
+            <input type="email"
+                   class="form-control"
+                   id="billingemail"
+                   value="{{ invoice.subscription.billing_email|default:'' }}"
+                   readonly>
+
+
+            <!-- BILLING PERIOD START -->
+            <label for="billingperiodstart" class="form-label">
+                Billing Period Start
+            </label>
+
+            <input type="date"
+                   class="form-control"
+                   id="billingperiodstart"
+                   name="billing_period_start"
+                   value="{{ invoice.billing_period_start|date:'Y-m-d' }}"
+                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                   required>
+
+
+            <!-- BILLING PERIOD END -->
+            <label for="billingperiodend" class="form-label">
+                Billing Period End
+            </label>
+
+            <input type="date"
+                   class="form-control"
+                   id="billingperiodend"
+                   name="billing_period_end"
+                   value="{{ invoice.billing_period_end|date:'Y-m-d' }}"
+                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                   required>
+
+
+            <!-- AMOUNT -->
+            <label for="amount" class="form-label">
+                Amount
+            </label>
+
+            <input type="number"
+                   class="form-control"
+                   id="amount"
+                   name="amount"
+                   placeholder="Amount"
+                   value="{{ invoice.amount|default:'' }}"
+                   step="0.01"
+                   min="0"
+                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                   required>
+
+
+            <!-- DUE DATE -->
+            <label for="duedate" class="form-label">
+                Due Date
+            </label>
+
+            <input type="date"
+                   class="form-control"
+                   id="duedate"
+                   name="due_date"
+                   value="{{ invoice.due_date|date:'Y-m-d' }}"
+                   required>
+
+
+            <!-- STATUS -->
+            <label for="status" class="form-label">
+                Status
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="status"
+                   value="{{ invoice.status|default:'Draft' }}"
+                   readonly>
+
+
+            <!-- CREDIT NOTE -->
+            <label for="creditnote" class="form-label">
+                Credit Note
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="creditnote"
+                   value="{% if invoice.credit_note %}{{ invoice.credit_note.amount }}{% else %}No Credit Note{% endif %}"
+                   readonly>
+
+
+            <!-- OWNER -->
+            <label for="owner" class="form-label">
+                Owner
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="owner"
+                   value="{{ invoice.subscription.owner.username|default:'' }}"
+                   readonly>
+
+
+            <!-- BUTTONS -->
+            <div class="d-flex justify-content-center gap-3 mt-3">
+
+                <button class="btn btn-danger btn1"
+                        type="submit">
+                    Submit
+                </button>
+
+                <a class="btn btn-danger btn1"
+                   href="{% url 'invoice_list' %}">
+                    Go Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script>
+        const subscriptionSelect = document.getElementById("subscription");
+        const customerName = document.getElementById("customername");
+        const billingEmail = document.getElementById("billingemail");
+
+        subscriptionSelect.addEventListener("change", function () {
+
+            const selectedOption =
+                this.options[this.selectedIndex];
+
+            customerName.value =
+                selectedOption.dataset.customer || "";
+
+            billingEmail.value =
+                selectedOption.dataset.email || "";
+
+        });
+    </script>
+
+</body>
+
+</html>
