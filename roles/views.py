@@ -137,3 +137,429 @@ def edit_subscription(request, id):
         "subscription": subscription,
         "account_managers": account_managers
     })
+
+
+
+# -------------------------------LIST ALL INVOICES----------------------------------------------------
+@login_required
+def invoice_list(request):
+
+    invoices = Invoice.objects.select_related(
+        'subscription',
+        'subscription__owner'
+    ).prefetch_related(
+        'credit_note'
+    ).all()
+
+    # ---------------- SEARCH ----------------
+
+    search = request.GET.get('search', '').strip()
+
+    if search:
+        invoices = invoices.filter(
+            Q(subscription__customer_name__icontains=search) |
+            Q(subscription__billing_email__icontains=search)
+        )
+
+    # ---------------- STATUS FILTER ----------------
+
+    status = request.GET.get('status', '')
+
+    if status:
+        invoices = invoices.filter(status=status)
+
+    # ---------------- OVERDUE FILTER ----------------
+
+    overdue = request.GET.get('overdue', '')
+
+    if overdue == 'yes':
+        invoices = invoices.filter(
+            status='Issued',
+            due_date__lt=timezone.now().date()
+        )
+
+    elif overdue == 'no':
+        invoices = invoices.exclude(
+            status='Issued',
+            due_date__lt=timezone.now().date()
+        )
+
+    # ---------------- OWNER FILTER ----------------
+
+    owner = request.GET.get('owner', '')
+
+    if owner:
+        invoices = invoices.filter(
+            subscription__owner_id=owner
+        )
+
+    # ---------------- SORTING ----------------
+
+    sort = request.GET.get('sort', '')
+
+    if sort == 'due_date':
+        invoices = invoices.order_by('due_date')
+
+    elif sort == 'amount':
+        invoices = invoices.order_by('amount')
+
+    elif sort == 'status':
+        invoices = invoices.order_by('status')
+
+    else:
+        invoices = invoices.order_by('-id')
+
+    # ---------------- PAGINATION ----------------
+
+    paginator = Paginator(invoices, 10)
+
+    page_number = request.GET.get('page')
+
+    invoices = paginator.get_page(page_number)
+
+    account_managers = request.user.__class__.objects.filter(
+        groups__name='Account Manager'
+    ).distinct()
+
+    return render(
+        request,
+        'invo.html',
+        {
+            'invoices': invoices,
+            'account_managers': account_managers,
+        }
+    )
+
+# -------------------------------ADD INVOICES----------------------------------------------------
+@login_required
+def add_invoice(request):
+
+    subscriptions = Subscription.objects.filter(
+        is_archived=False
+    ).select_related('owner')
+
+    if request.method == 'POST':
+
+        subscription_id = request.POST.get('subscription')
+        billing_period_start = request.POST.get('billing_period_start')
+        billing_period_end = request.POST.get('billing_period_end')
+        amount = request.POST.get('amount')
+        due_date = request.POST.get('due_date')
+
+        subscription = get_object_or_404(
+            Subscription,
+            id=subscription_id,
+            is_archived=False
+        )
+
+        invoice = Invoice.objects.create(
+            subscription=subscription,
+            billing_period_start=billing_period_start,
+            billing_period_end=billing_period_end,
+            amount=amount,
+            due_date=due_date,
+            status='Draft'
+        )
+
+        invoice.invoice_number = f"INV-{invoice.id:04d}"
+        invoice.save(update_fields=['invoice_number'])
+
+        messages.success(
+            request,
+            'Invoice created successfully.'
+        )
+
+        return redirect('invoice_list')
+
+    return render(
+        request,
+        'invo_form.html',
+        {
+            'subscriptions': subscriptions,
+        }
+    )
+
+
+# -------------------------------EDIT INVOICES----------------------------------------------------
+@login_required
+def edit_invoice(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    subscriptions = Subscription.objects.filter(
+        is_archived=False
+    ).select_related('owner')
+
+    if invoice.status == 'Paid':
+        messages.error(
+            request,
+            'A Paid invoice is immutable and cannot be edited.'
+        )
+        return redirect('invoice_list')
+
+    if invoice.status == 'Void':
+        messages.error(
+            request,
+            'A Void invoice cannot be edited.'
+        )
+        return redirect('invoice_list')
+
+    if request.method == 'POST':
+
+        # Draft → everything can be changed
+        if invoice.status == 'Draft':
+
+            subscription_id = request.POST.get('subscription')
+
+            invoice.subscription = get_object_or_404(
+                Subscription,
+                id=subscription_id,
+                is_archived=False
+            )
+
+            invoice.billing_period_start = request.POST.get(
+                'billing_period_start'
+            )
+
+            invoice.billing_period_end = request.POST.get(
+                'billing_period_end'
+            )
+
+            invoice.amount = request.POST.get('amount')
+
+            invoice.due_date = request.POST.get(
+                'due_date'
+            )
+
+            invoice.save()
+
+            messages.success(
+                request,
+                'Draft invoice updated successfully.'
+            )
+
+        # Issued → only due date
+        elif invoice.status == 'Issued':
+
+            invoice.due_date = request.POST.get(
+                'due_date'
+            )
+
+            invoice.save(
+                update_fields=[
+                    'due_date',
+                    'updated_at'
+                ]
+            )
+
+            messages.success(
+                request,
+                'Invoice due date updated successfully.'
+            )
+
+        return redirect('invoice_list')
+
+    return render(
+        request,
+        'invo_form.html',
+        {
+            'invoice': invoice,
+            'subscriptions': subscriptions,
+        }
+    )
+
+
+# -------------------------------ISSUE INVOICES----------------------------------------------------
+@login_required
+def issue_invoice(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    if request.method != 'POST':
+        return redirect('invoice_list')
+
+    if invoice.status != 'Draft':
+
+        messages.error(
+            request,
+            'Only a Draft invoice can be issued.'
+        )
+
+        return redirect('invoice_list')
+
+    if invoice.billing_period_start > invoice.billing_period_end:
+
+        messages.error(
+            request,
+            'Billing period start date cannot be after the end date.'
+        )
+
+        return redirect('invoice_list')
+
+    invoice.status = 'Issued'
+
+    invoice.save(
+        update_fields=[
+            'status',
+            'updated_at'
+        ]
+    )
+
+    messages.success(
+        request,
+        f'{invoice.invoice_number} has been issued.'
+    )
+
+    return redirect('invoice_list')
+
+
+# -------------------------------MARK AS PAID INVOICES----------------------------------------------------
+@login_required
+def mark_invoice_paid(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    if request.method != 'POST':
+        return redirect('invoice_list')
+
+    if invoice.status != 'Issued':
+
+        messages.error(
+            request,
+            'Only an Issued invoice can be marked as Paid.'
+        )
+
+        return redirect('invoice_list')
+
+    invoice.status = 'Paid'
+
+    invoice.save(
+        update_fields=[
+            'status',
+            'updated_at'
+        ]
+    )
+
+    messages.success(
+        request,
+        f'{invoice.invoice_number} has been marked as Paid.'
+    )
+
+    return redirect('invoice_list')
+
+
+# -------------------------------VOID INVOICES----------------------------------------------------
+@login_required
+def void_invoice(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    if request.method != 'POST':
+        return redirect('invoice_list')
+
+    if invoice.status not in ['Draft', 'Issued']:
+
+        messages.error(
+            request,
+            'Only Draft or Issued invoices can be voided.'
+        )
+
+        return redirect('invoice_list')
+
+    reason = request.POST.get('void_reason', '').strip()
+
+    if not reason:
+
+        messages.error(
+            request,
+            'A reason is required to void an invoice.'
+        )
+
+        return redirect('invoice_list')
+
+    invoice.status = 'Void'
+    invoice.void_reason = reason
+
+    invoice.save(
+        update_fields=[
+            'status',
+            'void_reason',
+            'updated_at'
+        ]
+    )
+
+    messages.success(
+        request,
+        f'{invoice.invoice_number} has been voided.'
+    )
+
+    return redirect('invoice_list')
+
+# -------------------------------CREDIT_NOTE INVOICES----------------------------------------------------
+@login_required
+def create_credit_note(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    if request.method != 'POST':
+        return redirect('invoice_list')
+
+    if invoice.status != 'Paid':
+
+        messages.error(
+            request,
+            'A credit note can only be created for a Paid invoice.'
+        )
+
+        return redirect('invoice_list')
+
+    if hasattr(invoice, 'credit_note'):
+
+        messages.error(
+            request,
+            'A credit note already exists for this invoice.'
+        )
+
+        return redirect('invoice_list')
+
+    amount = request.POST.get('amount')
+    reason = request.POST.get('reason', '').strip()
+
+    if not amount or not reason:
+
+        messages.error(
+            request,
+            'Credit note amount and reason are required.'
+        )
+
+        return redirect('invoice_list')
+
+    CreditNote.objects.create(
+        invoice=invoice,
+        amount=amount,
+        reason=reason,
+        created_by=request.user
+    )
+
+    messages.success(
+        request,
+        'Credit note created successfully.'
+    )
+
+    return redirect('invoice_list')
+
