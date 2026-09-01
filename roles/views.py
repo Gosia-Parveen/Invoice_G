@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from .models import Subscription
 
 
-
 # -------------------------- LOGIN ----------------------------------------
 
 def login(request):
@@ -72,3 +71,69 @@ def logout(request):
     auth_logout(request)
     return redirect("login")
 
+
+# -------------------------------Subs---------------------------------------
+@login_required
+def subs_tab(request):
+    subscriptions = Subscription.objects.filter(is_archived=False)
+
+    return render(request, "subs.html", {
+        "subscriptions": subscriptions
+    })
+
+
+
+# -------------------------------Subs_FORM--------------------------------------------
+@login_required
+def add_subscription(request):
+
+    account_managers = User.objects.filter(
+        groups__name="Account Manager"
+    )
+
+    if request.method == "POST":
+        Subscription.objects.create(
+            customer_name=request.POST.get("customer_name"),
+            billing_email=request.POST.get("billing_email"),
+            plan=request.POST.get("plan"),
+            billing_cycle=request.POST.get("billing_cycle"),
+            price=request.POST.get("price"),
+            start_date=request.POST.get("start_date"),
+            owner_id=request.POST.get("owner")
+        )
+
+        return redirect("subs_tab")
+
+    return render(request, "new_sub.html", {
+        "account_managers": account_managers
+    })
+
+
+
+# -------------------------------Subs_FORM_EDIT----------------------------------------------------
+@login_required
+def edit_subscription(request, id):
+
+    subscription = Subscription.objects.get(id=id)
+
+    account_managers = User.objects.filter(
+        groups__name="Account Manager"
+    )
+
+    if request.method == "POST":
+        subscription.customer_name = request.POST.get("customer_name")
+        subscription.billing_email = request.POST.get("billing_email")
+        subscription.plan = request.POST.get("plan")
+        subscription.billing_cycle = request.POST.get("billing_cycle")
+        subscription.price = request.POST.get("price")
+        subscription.start_date = request.POST.get("start_date")
+        subscription.owner_id = request.POST.get("owner")
+
+        subscription.save()
+
+        return redirect("subs_tab")
+
+    return render(request, "new_sub.html", {
+        "subscription": subscription,
+        "account_managers": account_managers
+    })
