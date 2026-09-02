@@ -42,7 +42,6 @@ def login(request):
 
     return render(request, "login.html")
 
-
 # -------------------------- ADMIN DASHBOARD -------------------------------
 
 @login_required
@@ -51,7 +50,146 @@ def admin_dash(request):
     if not request.user.is_superuser:
         return redirect("login")
 
-    return render(request, "admin_dash.html")
+    # BASIC DATE---------------------------------------------------
+    today = timezone.localdate()
+    month_start = today.replace(day=1)
+
+    #--------cards view on dashboard------------------------
+
+    today = timezone.localdate()
+    month_start = today.replace(day=1)
+
+    invoices_issued = Invoice.objects.filter(
+        status='Issued',
+        created_at__date__gte=month_start,
+        created_at__date__lte=today
+    ).count()
+
+    revenue_collected = Invoice.objects.filter(
+        status='Paid',
+        due_date__gte=month_start,
+        due_date__lte=today
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    receivables = Invoice.objects.filter(
+        status='Issued'
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    overdue_invoices = Invoice.objects.filter(
+        status='Issued',
+        due_date__lt=today
+    ).count()
+
+
+# OVERDUE ALERTS ---------------------------------------------------------
+
+    overdue_alerts = []
+
+    overdue_queryset = Invoice.objects.filter(
+        status='Issued',
+        due_date__lt=today
+    ).select_related(
+        'subscription'
+    ).order_by(
+        'due_date'
+    )
+
+    for invoice in overdue_queryset:
+
+        latest_dismissal = invoice.alert_dismissals.order_by(
+            '-dismissed_at'
+        ).first()
+
+        # No dismissal exists
+        if latest_dismissal is None:
+            overdue_alerts.append(invoice)
+
+        # Invoice was updated after the alert was dismissed
+        elif invoice.updated_at > latest_dismissal.dismissed_at:
+            overdue_alerts.append(invoice)
+
+#chart 1
+
+    invoice_status = {
+    'Draft': Invoice.objects.filter(status='Draft').count(),
+    'Issued': Invoice.objects.filter(status='Issued').count(),
+    'Paid': Invoice.objects.filter(status='Paid').count(),
+    'Void': Invoice.objects.filter(status='Void').count(), }
+
+    invoice_status_json = json.dumps(invoice_status)
+
+#chart 2
+    invoice_plan = {}
+    for invoice in Invoice.objects.all():
+        plan_name = invoice.subscription.plan
+        invoice_plan[plan_name] = invoice_plan.get(plan_name, 0) + 1
+
+    invoice_plan_json = json.dumps(invoice_plan)
+
+#---8 week graph
+    eight_weeks_ago = today - timezone.timedelta(weeks=8)
+    weekly_revenue = {}
+
+    for invoice in Invoice.objects.filter(
+        status='Paid',
+        due_date__gte=eight_weeks_ago,
+        due_date__lte=today
+    ):
+        week_start = invoice.due_date - timezone.timedelta(
+            days=invoice.due_date.weekday()
+        )
+        week_name = week_start.strftime('%d %b')
+
+        weekly_revenue[week_name] = weekly_revenue.get(
+            week_name, 0
+        ) + float(invoice.amount)
+
+    weekly_revenue_json = json.dumps(weekly_revenue)
+
+    # SEND DATA TO TEMPLATE
+
+    return render(request, 'admin_dash.html', {
+        'invoices_issued': invoices_issued,
+        'revenue_collected': revenue_collected,
+        'receivables': receivables,
+        'overdue_invoices': overdue_invoices,
+
+
+        'overdue_alerts': overdue_alerts, #alert
+        'overdue_alert_count': len(overdue_alerts),
+
+        'invoice_status': invoice_status_json,#ch1
+        'invoice_plan': invoice_plan_json,#ch2
+        'weekly_revenue': weekly_revenue_json,#week8
+    })
+
+
+# -------------------------- DismissALERT BY ADMIN ----------------------
+
+@login_required
+def dismiss_overdue_alert(request, invoice_id):
+
+    if not request.user.is_superuser:
+        return redirect("login")
+
+    if request.method == "POST":
+
+        invoice = get_object_or_404(
+            Invoice,
+            id=invoice_id
+        )
+
+        # Create a dismissal record
+        InvoiceAlertDismissal.objects.create(
+            invoice=invoice,
+            dismissed_by=request.user
+        )
+
+    return redirect("admin_dash")
 
 
 # -------------------------- ACCOUNT MANAGER DASHBOARD ----------------------
