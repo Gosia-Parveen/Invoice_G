@@ -3,8 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-#------------------------------------------------------subscription----------------------------------------------------
+#-----------------------------------------------------subscription-------------------------------------
 class Subscription(models.Model):
 
     customer_name = models.CharField(max_length=100)
@@ -42,8 +41,8 @@ class Subscription(models.Model):
     def __str__(self):
         return self.customer_name
 
-
 #------------------------------------------------------invoice----------------------------------------------------
+
 class Invoice(models.Model):
 
     STATUS_CHOICES = [
@@ -97,6 +96,29 @@ class Invoice(models.Model):
     def __str__(self):
         return self.invoice_number
 
+#------------------------------------------------------Invoice-----ALERT----------------------------------------------------
+
+class InvoiceAlertDismissal(models.Model):
+
+    invoice = models.ForeignKey(
+        'Invoice',
+        on_delete=models.CASCADE,
+        related_name='alert_dismissals'
+    )
+
+    dismissed_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    dismissed_by = models.ForeignKey(
+        'auth.User',
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.invoice.invoice_number} - Alert Dismissed"
+
+#------------------------------------------------------CreditNote----------------------------------------------------
 
 class CreditNote(models.Model):
 
