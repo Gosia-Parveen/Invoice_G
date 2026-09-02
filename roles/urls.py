@@ -26,6 +26,8 @@ urlpatterns = [
     path('invoices/<int:invoice_id>/void/',views.void_invoice,name='void_invoice'),
 
     path('invoices/<int:invoice_id>/credit-note/',views.create_credit_note,name='create_credit_note'),
-
     
+    #--------------------------ALERT----------------------  
+    path('admin-dashboard/dismiss-overdue/<int:invoice_id>/',views.dismiss_overdue_alert, name='dismiss_overdue_alert' ),
+
 ]
