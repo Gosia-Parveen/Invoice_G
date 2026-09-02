@@ -99,15 +99,32 @@
     <!-- Sidebar (Pushes content, appears below navbar) -->
     <div id="sidebar" class=" text-white">
         <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Billing_Admin</h5>
+            <h5 class="mb-0">
+                {% if user.is_superuser %}
+                    Billing Admin
+                {% else %}
+                    Account Manager ({{ user.first_name }})
+                {% endif %}
+            </h5>
             <button type="button" class="btn-close btn-close-white" id="closeSidebar"></button>
         </div>
         <ul class="navbar-nav flex-column px-3">
-            <li class="nav-item"><a class="nav-link" href="{% url 'admin_dash' %}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'subs_tab' %}">Subscription</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Invoice</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Account Manager</a></li>
-        </ul>
+
+    <li class="nav-item">
+        {% if user.is_superuser %}
+            <a class="nav-link" href="{% url 'admin_dash' %}">
+                Dashboard
+            </a>
+        {% else %}
+            <a class="nav-link" href="{% url 'acc_man' %}">
+                Dashboard
+            </a>
+        {% endif %}
+    </li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'subs_tab' %}">Subscription</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'invoice_list' %}">Invoice</a></li>
+
+</ul>
     </div>
 
     <!-- Main Content -->
