@@ -34,6 +34,13 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 
 ## Decision 5
 
-- **Chose:**
-- **Rejected:**
-- **Why:**
+- **Chose:** To make the user name/role change according to the current logged-in user dynamically, such as Billing Admin, Account Manager (Sam, Mia, Kaz....).
+- **Rejected:** To hardcode Billing_Admin instead of using the current logged-in user's name/role.
+- **Why:** To give a personal touch because different users will be using the system, so it should change according to the current logged-in user.
+                                              ---------------------------------------------------------
+
+## Decision 6
+
+- **Chose:** To add two more Account Managers and one Billing Admin along with some data because it looks empty. Create at least five new subscriptions, and each subscription should have at least two to three invoices, because we need to check the working of the site till now.
+- **Rejected:** To continue testing with only the existing managers, subscriptions, and invoices.
+- **Why:** because we need enough data to check the working of the site till now and adding multiple managers gave it a bit of realistic effect.
