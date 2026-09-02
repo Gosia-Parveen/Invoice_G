@@ -31,6 +31,12 @@ class Subscription(models.Model):
         on_delete=models.PROTECT
     )
 
+    collaborators = models.ManyToManyField(
+        User,
+        related_name="collaborated_subscriptions",
+        blank=True
+    )
+
     is_archived = models.BooleanField(default=False)
 
     def __str__(self):
