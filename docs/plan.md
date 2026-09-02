@@ -31,6 +31,13 @@ I have divided the 10 task according to the days given, so i plan on completing 
     Restricting Manager Invoice Actions[Credit Notes Visible to Manager but Read-only,]
     -----pushed into github-----
 
+**## Day_4: Refining a feww details**
+    Configured Account Manager Permissions for View Credit Note + Add, Change and View Invoice/Subscription,
+    Restricted Credit Note Creation through Template + Backend Protection,
+    Corrected Sidebar Dashboard Routing for Billing Admin + Account Managers,
+    Added collaborators ManyToMany Field to Subscription,
+    -----pushed into github-----
+
 
                                                         -------------------------------------------------------
 - What did you estimate versus what it actually took?
