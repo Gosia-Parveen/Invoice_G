@@ -75,12 +75,26 @@ def logout(request):
 # -------------------------------Subs---------------------------------------
 @login_required
 def subs_tab(request):
-    subscriptions = Subscription.objects.filter(is_archived=False)
+
+    if request.user.is_superuser:
+        subscriptions = Subscription.objects.filter(
+            is_archived=False
+        )
+
+    elif request.user.groups.filter(name="Account Manager").exists():
+        subscriptions = Subscription.objects.filter(
+            is_archived=False
+        ).filter(
+            Q(owner=request.user) |
+            Q(collaborators=request.user)
+        ).distinct()
+
+    else:
+        subscriptions = Subscription.objects.none()
 
     return render(request, "subs.html", {
         "subscriptions": subscriptions
     })
-
 
 
 # -------------------------------Subs_FORM--------------------------------------------
@@ -92,7 +106,8 @@ def add_subscription(request):
     )
 
     if request.method == "POST":
-        Subscription.objects.create(
+
+        subscription = Subscription.objects.create(
             customer_name=request.POST.get("customer_name"),
             billing_email=request.POST.get("billing_email"),
             plan=request.POST.get("plan"),
@@ -102,12 +117,14 @@ def add_subscription(request):
             owner_id=request.POST.get("owner")
         )
 
+        collaborator_ids = request.POST.getlist("collaborators")
+        subscription.collaborators.set(collaborator_ids)
+
         return redirect("subs_tab")
 
     return render(request, "new_sub.html", {
         "account_managers": account_managers
     })
-
 
 
 # -------------------------------Subs_FORM_EDIT----------------------------------------------------
