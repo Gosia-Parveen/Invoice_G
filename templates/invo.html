@@ -103,318 +103,304 @@
     </div>
 </nav>
 
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="text-white">
 
-<!-- Sidebar -->
-<div id="sidebar" class="text-white">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
 
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+    {% if user.is_superuser %}
+        Billing Admin
+    {% else %}
+        Account Manager ({{ user.first_name }})
+    {% endif %}
+</h5>
 
-        <h5 class="mb-0">Billing_Admin</h5>
+            <button type="button" class="btn-close btn-close-white" id="closeSidebar">
+            </button>
 
-        <button type="button"
-                class="btn-close btn-close-white"
-                id="closeSidebar">
-        </button>
+        </div>
 
-    </div>
+        <ul class="navbar-nav flex-column px-3">
 
-    <ul class="navbar-nav flex-column px-3">
-
-        <li class="nav-item">
+    <li class="nav-item">
+        {% if user.is_superuser %}
             <a class="nav-link" href="{% url 'admin_dash' %}">
                 Dashboard
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'subs_tab' %}">
-                Subscription
+        {% else %}
+            <a class="nav-link" href="{% url 'acc_man' %}">
+                Dashboard
             </a>
-        </li>
+        {% endif %}
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'invoice_list' %}">
-                Invoice
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'subs_tab' %}">
+            Subscription
+        </a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                Account Manager
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'invoice_list' %}">
+            Invoice
+        </a>
+    </li>
 
-    </ul>
+</ul>
 
-</div>
-
-
-<!-- Main Content -->
-<main class="container-fluid content-wrapper">
-
-    <div class="container" style="padding-top:10px;">
-
-        <!-- Header -->
-        <div class="card p-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <h3 class="mb-0">
-                    Invoice
-                </h3>
-
-                <a class="btn btn-danger"
-                   href="{% url 'add_invoice' %}">
-                    + Add New Invoice
-                </a>
-
-            </div>
+    </div>
 
 
-            <!-- Search / Filters -->
-            <form method="GET" class="row g-2">
+    <!-- Main Content -->
+    <main class="container-fluid content-wrapper">
 
-                <div class="col-md-3">
-                    <input type="text"
-                           name="search"
-                           class="form-control"
-                           placeholder="Search customer or email"
-                           value="{{ request.GET.search }}">
-                </div>
+        <div class="container" style="padding-top:10px;">
 
+            <!-- Header -->
+            <div class="card p-4">
 
-                <div class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    <select name="status" class="form-control">
+                    <h3 class="mb-0">
+                        Invoice
+                    </h3>
 
-                        <option value="">All Status</option>
-
-                        <option value="Draft"
-                            {% if request.GET.status == "Draft" %}selected{% endif %}>
-                            Draft
-                        </option>
-
-                        <option value="Issued"
-                            {% if request.GET.status == "Issued" %}selected{% endif %}>
-                            Issued
-                        </option>
-
-                        <option value="Paid"
-                            {% if request.GET.status == "Paid" %}selected{% endif %}>
-                            Paid
-                        </option>
-
-                        <option value="Void"
-                            {% if request.GET.status == "Void" %}selected{% endif %}>
-                            Void
-                        </option>
-
-                    </select>
+                    <a class="btn btn-danger" href="{% url 'add_invoice' %}">
+                        + Add New Invoice
+                    </a>
 
                 </div>
 
 
-                <div class="col-md-2">
+                <!-- Search / Filters -->
+                <form method="GET" class="row g-2">
 
-                    <select name="overdue" class="form-control">
-
-                        <option value="">Overdue</option>
-
-                        <option value="yes"
-                            {% if request.GET.overdue == "yes" %}selected{% endif %}>
-                            Yes
-                        </option>
-
-                        <option value="no"
-                            {% if request.GET.overdue == "no" %}selected{% endif %}>
-                            No
-                        </option>
-
-                    </select>
-
-                </div>
+                    <div class="col-md-3">
+                        <input type="text" name="search" class="form-control" placeholder="Search customer or email"
+                            value="{{ request.GET.search }}">
+                    </div>
 
 
-                <div class="col-md-2">
+                    <div class="col-md-2">
 
-                    <select name="owner" class="form-control">
+                        <select name="status" class="form-control">
 
-                        <option value="">All Owners</option>
+                            <option value="">All Status</option>
 
-                        {% for user in account_managers %}
+                            <option value="Draft" {% if request.GET.status == "Draft" %}selected{% endif %}>
+                                Draft
+                            </option>
 
-                            <option value="{{ user.id }}"
-                                {% if request.GET.owner == user.id|stringformat:"s" %}
-                                    selected
+                            <option value="Issued" {% if request.GET.status == "Issued" %}selected{% endif %}>
+                                Issued
+                            </option>
+
+                            <option value="Paid" {% if request.GET.status == "Paid" %}selected{% endif %}>
+                                Paid
+                            </option>
+
+                            <option value="Void" {% if request.GET.status == "Void" %}selected{% endif %}>
+                                Void
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <select name="overdue" class="form-control">
+
+                            <option value="">Overdue</option>
+
+                            <option value="yes" {% if request.GET.overdue == "yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                            <option value="no" {% if request.GET.overdue == "no" %}selected{% endif %}>
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <select name="owner" class="form-control">
+
+                            <option value="">All Owners</option>
+
+                            {% for user in account_managers %}
+
+                            <option value="{{ user.id }}" {% if request.GET.owner == user.id|stringformat:"s" %} selected
                                 {% endif %}>
                                 {{ user.username }}
                             </option>
 
-                        {% endfor %}
+                            {% endfor %}
 
-                    </select>
+                        </select>
 
-                </div>
-
-
-                <div class="col-md-2">
-
-                    <select name="sort" class="form-control">
-
-                        <option value="">Sort By</option>
-                        <option value="due_date">Due Date</option>
-                        <option value="amount">Amount</option>
-                        <option value="status">Status</option>
-
-                    </select>
-
-                </div>
+                    </div>
 
 
-                <div class="col-md-1">
+                    <div class="col-md-2">
 
-                    <button type="submit"
-                            class="btn btn-danger w-100">
-                        Search
-                    </button>
+                        <select name="sort" class="form-control">
 
-                </div>
+                            <option value="">Sort By</option>
+                            <option value="due_date">Due Date</option>
+                            <option value="amount">Amount</option>
+                            <option value="status">Status</option>
 
-            </form>
+                        </select>
 
-        </div>
+                    </div>
 
 
-        <!-- Messages -->
-        {% if messages %}
+                    <div class="col-md-1">
+
+                        <button type="submit" class="btn btn-danger w-100">
+                            Search
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Messages -->
+            {% if messages %}
 
             {% for message in messages %}
 
-                <div class="alert alert-{{ message.tags }} mt-3">
-                    {{ message }}
-                </div>
+            <div class="alert alert-{{ message.tags }} mt-3">
+                {{ message }}
+            </div>
 
             {% endfor %}
 
-        {% endif %}
+            {% endif %}
 
 
-        <!-- Table -->
-        <div class="table-container mt-3">
+            <!-- Table -->
+            <div class="table-container mt-3">
 
-            <table class="table table-hover">
+                <table class="table table-hover">
 
-                <thead>
+                    <thead>
 
-                    <tr>
+                        <tr>
 
-                        <th>Invoice No.</th>
-                        <th>Customer Name</th>
-                        <th>Billing Email</th>
-                        <th>Subscription</th>
-                        <th>Billing Period</th>
-                        <th>Amount</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Credit Note</th>
-                        <th>Owner</th>
-                        <th>Action</th>
+                            <th>Invoice No.</th>
+                            <th>Customer Name</th>
+                            <th>Billing Email</th>
+                            <th>Subscription</th>
+                            <th>Billing Period</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Credit Note</th>
+                            <th>Owner</th>
+                            <th>Action</th>
 
-                    </tr>
+                        </tr>
 
-                </thead>
-
-
-                <tbody>
-
-                    {% for invoice in invoices %}
-
-                    <tr>
-
-                        <th scope="row">
-                            {{ invoice.invoice_number }}
-                        </th>
-
-                        <td>
-                            {{ invoice.subscription.customer_name }}
-                        </td>
-
-                        <td>
-                            {{ invoice.subscription.billing_email }}
-                        </td>
-
-                        <td>
-                            {{ invoice.subscription.plan }}
-                        </td>
-
-                        <td>
-                            {{ invoice.billing_period_start }}
-                            -
-                            {{ invoice.billing_period_end }}
-                        </td>
-
-                        <td>
-                            {{ invoice.amount }}
-                        </td>
-
-                        <td>
-                            {{ invoice.due_date }}
-
-                            {% if invoice.status == "Issued" and invoice.due_date < today %}
-                                <br>
-                                <small class="text-danger">
-                                    Overdue
-                                </small>
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-                            {{ invoice.status }}
-                        </td>
+                    </thead>
 
 
-                        <!-- CREDIT NOTE -->
-                        <td>
+                    <tbody>
 
-                            {% if invoice.credit_note %}
+                        {% for invoice in invoices %}
+
+                        <tr>
+
+                            <th scope="row">
+                                {{ invoice.invoice_number }}
+                            </th>
+
+                            <td>
+                                {{ invoice.subscription.customer_name }}
+                            </td>
+
+                            <td>
+                                {{ invoice.subscription.billing_email }}
+                            </td>
+
+                            <td>
+                                {{ invoice.subscription.plan }}
+                            </td>
+
+                            <td>
+                                {{ invoice.billing_period_start }}
+                                -
+                                {{ invoice.billing_period_end }}
+                            </td>
+
+                            <td>
+                                {{ invoice.amount }}
+                            </td>
+
+                            <td>
+                                {{ invoice.due_date }}
+
+                                {% if invoice.status == "Issued" and invoice.due_date < today %} <br>
+                                    <small class="text-danger">
+                                        Overdue
+                                    </small>
+                                    {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ invoice.status }}
+                            </td>
+
+
+                            <!-- CREDIT NOTE -->
+                            <td>
+
+                                {% if invoice.credit_note %}
 
                                 {{ invoice.credit_note.amount }}
 
-                            {% else %}
+                                {% else %}
 
                                 —
 
-                            {% endif %}
+                                {% endif %}
 
-                        </td>
-
-
-                        <!-- OWNER -->
-                        <td>
-                            {{ invoice.subscription.owner.username }}
-                        </td>
+                            </td>
 
 
-                        <!-- ACTIONS -->
-                        <td>
+                            <!-- OWNER -->
+                            <td>
+                                {{ invoice.subscription.owner.username }}
+                            </td>
 
-                            {% if invoice.status == "Draft" %}
 
-                                <a class="btn btn-sm btn2 mb-1"
-                                   href="{% url 'edit_invoice' invoice.id %}">
+                            <!-- ACTIONS -->
+                            <td>
+
+                                {% if invoice.status == "Draft" %}
+
+                                <a class="btn btn-sm btn2 mb-1" href="{% url 'edit_invoice' invoice.id %}">
                                     Edit
                                 </a>
 
 
-                                <form method="POST"
-                                      action="{% url 'issue_invoice' invoice.id %}"
-                                      class="action-form">
+                                <form method="POST" action="{% url 'issue_invoice' invoice.id %}" class="action-form">
 
                                     {% csrf_token %}
 
-                                    <button type="submit"
-                                            class="btn btn-sm btn1">
+                                    <button type="submit" class="btn btn-sm btn1">
                                         Issue
                                     </button>
 
@@ -422,31 +408,26 @@
 
 
                                 <!-- VOID -->
-                                <button type="button"
-                                        class="btn btn-sm btn1"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#voidModal{{ invoice.id }}">
+                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
+                                    data-bs-target="#voidModal{{ invoice.id }}">
                                     Void
                                 </button>
 
 
-                            {% elif invoice.status == "Issued" %}
+                                {% elif invoice.status == "Issued" %}
 
 
-                                <a class="btn btn-sm btn2 mb-1"
-                                   href="{% url 'edit_invoice' invoice.id %}">
+                                <a class="btn btn-sm btn2 mb-1" href="{% url 'edit_invoice' invoice.id %}">
                                     Edit
                                 </a>
 
 
-                                <form method="POST"
-                                      action="{% url 'mark_invoice_paid' invoice.id %}"
-                                      class="action-form">
+                                <form method="POST" action="{% url 'mark_invoice_paid' invoice.id %}"
+                                    class="action-form">
 
                                     {% csrf_token %}
 
-                                    <button type="submit"
-                                            class="btn btn-sm btn1">
+                                    <button type="submit" class="btn btn-sm btn1">
                                         Mark Paid
                                     </button>
 
@@ -454,285 +435,262 @@
 
 
                                 <!-- VOID -->
-                                <button type="button"
-                                        class="btn btn-sm btn1"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#voidModal{{ invoice.id }}">
+                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
+                                    data-bs-target="#voidModal{{ invoice.id }}">
                                     Void
                                 </button>
 
-{% elif invoice.status == "Paid" %}
+                                {% elif invoice.status == "Paid" %}
 
-    {% if invoice.credit_note %}
+                                {% if invoice.credit_note %}
 
-        <span class="text-success">
-            Credit Note Added
-        </span>
+                                <span class="text-success">
+                                    Credit Note Added
+                                </span>
 
-    {% else %}
+                                {% else %}
 
-        {% if not is_account_manager %}
+                                {% if not is_account_manager %}
 
-            <button type="button"
-                    class="btn btn-sm btn1"
-                    data-bs-toggle="modal"
-                    data-bs-target="#creditModal{{ invoice.id }}">
-                Credit Note
-            </button>
+                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
+                                    data-bs-target="#creditModal{{ invoice.id }}">
+                                    Credit Note
+                                </button>
 
-        {% else %}
-
-            <span>
-                —
-            </span>
-
-        {% endif %}
-
-    {% endif %}
-
-
-                            {% elif invoice.status == "Void" %}
+                                {% else %}
 
                                 <span>
                                     —
                                 </span>
 
-                            {% endif %}
+                                {% endif %}
 
-                        </td>
-
-                    </tr>
+                                {% endif %}
 
 
-                    <!-- VOID MODAL -->
-                    {% if invoice.status == "Draft" or invoice.status == "Issued" %}
+                                {% elif invoice.status == "Void" %}
 
-                    <div class="modal fade"
-                         id="voidModal{{ invoice.id }}"
-                         tabindex="-1">
+                                <span>
+                                    —
+                                </span>
 
-                        <div class="modal-dialog">
+                                {% endif %}
 
-                            <div class="modal-content">
+                            </td>
 
-                                <div class="modal-header">
+                        </tr>
 
-                                    <h5 class="modal-title">
-                                        Void {{ invoice.invoice_number }}
-                                    </h5>
 
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal">
-                                    </button>
+                        <!-- VOID MODAL -->
+                        {% if invoice.status == "Draft" or invoice.status == "Issued" %}
+
+                        <div class="modal fade" id="voidModal{{ invoice.id }}" tabindex="-1">
+
+                            <div class="modal-dialog">
+
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+
+                                        <h5 class="modal-title">
+                                            Void {{ invoice.invoice_number }}
+                                        </h5>
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                        </button>
+
+                                    </div>
+
+
+                                    <form method="POST" action="{% url 'void_invoice' invoice.id %}">
+
+                                        {% csrf_token %}
+
+                                        <div class="modal-body">
+
+                                            <label class="form-label">
+                                                Reason for voiding
+                                            </label>
+
+                                            <textarea name="void_reason" class="form-control" rows="4"
+                                                required></textarea>
+
+                                        </div>
+
+
+                                        <div class="modal-footer">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Cancel
+                                            </button>
+
+                                            <button type="submit" class="btn btn-danger">
+                                                Void Invoice
+                                            </button>
+
+                                        </div>
+
+                                    </form>
 
                                 </div>
-
-
-                                <form method="POST"
-                                      action="{% url 'void_invoice' invoice.id %}">
-
-                                    {% csrf_token %}
-
-                                    <div class="modal-body">
-
-                                        <label class="form-label">
-                                            Reason for voiding
-                                        </label>
-
-                                        <textarea name="void_reason"
-                                                  class="form-control"
-                                                  rows="4"
-                                                  required></textarea>
-
-                                    </div>
-
-
-                                    <div class="modal-footer">
-
-                                        <button type="button"
-                                                class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            Cancel
-                                        </button>
-
-                                        <button type="submit"
-                                                class="btn btn-danger">
-                                            Void Invoice
-                                        </button>
-
-                                    </div>
-
-                                </form>
 
                             </div>
 
                         </div>
 
-                    </div>
-
-                    {% endif %}
+                        {% endif %}
 
 
-                    <!-- CREDIT NOTE MODAL -->
-                    {% if invoice.status == "Paid" and not invoice.credit_note %}
+                        <!-- CREDIT NOTE MODAL -->
+                        {% if invoice.status == "Paid" and not invoice.credit_note and user.is_superuser %}
 
-                    <div class="modal fade"
-                         id="creditModal{{ invoice.id }}"
-                         tabindex="-1">
+                        <div class="modal fade" id="creditModal{{ invoice.id }}" tabindex="-1">
 
-                        <div class="modal-dialog">
+                            <div class="modal-dialog">
 
-                            <div class="modal-content">
+                                <div class="modal-content">
 
-                                <div class="modal-header">
+                                    <div class="modal-header">
 
-                                    <h5 class="modal-title">
-                                        Credit Note -
-                                        {{ invoice.invoice_number }}
-                                    </h5>
+                                        <h5 class="modal-title">
+                                            Credit Note -
+                                            {{ invoice.invoice_number }}
+                                        </h5>
 
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal">
-                                    </button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                        </button>
+
+                                    </div>
+
+
+                                    <form method="POST" action="{% url 'create_credit_note' invoice.id %}">
+
+                                        {% csrf_token %}
+
+                                        <div class="modal-body">
+
+                                            <label class="form-label">
+                                                Credit Note Amount
+                                            </label>
+
+                                            <input type="number" name="amount" class="form-control" step="0.01"
+                                                min="0.01" max="{{ invoice.amount }}" required>
+
+
+                                            <label class="form-label mt-3">
+                                                Reason
+                                            </label>
+
+                                            <textarea name="reason" class="form-control" rows="4" required></textarea>
+
+                                        </div>
+
+
+                                        <div class="modal-footer">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Cancel
+                                            </button>
+
+                                            <button type="submit" class="btn btn-danger">
+                                                Create Credit Note
+                                            </button>
+
+                                        </div>
+
+                                    </form>
 
                                 </div>
-
-
-                                <form method="POST"
-                                      action="{% url 'create_credit_note' invoice.id %}">
-
-                                    {% csrf_token %}
-
-                                    <div class="modal-body">
-
-                                        <label class="form-label">
-                                            Credit Note Amount
-                                        </label>
-
-                                        <input type="number"
-                                               name="amount"
-                                               class="form-control"
-                                               step="0.01"
-                                               min="0.01"
-                                               max="{{ invoice.amount }}"
-                                               required>
-
-
-                                        <label class="form-label mt-3">
-                                            Reason
-                                        </label>
-
-                                        <textarea name="reason"
-                                                  class="form-control"
-                                                  rows="4"
-                                                  required></textarea>
-
-                                    </div>
-
-
-                                    <div class="modal-footer">
-
-                                        <button type="button"
-                                                class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            Cancel
-                                        </button>
-
-                                        <button type="submit"
-                                                class="btn btn-danger">
-                                            Create Credit Note
-                                        </button>
-
-                                    </div>
-
-                                </form>
 
                             </div>
 
                         </div>
 
-                    </div>
+                        {% endif %}
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="11" class="text-center">
+                                No invoices found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Pagination -->
+            {% if invoices.has_other_pages %}
+
+            <nav>
+
+                <ul class="pagination justify-content-center">
+
+                    {% if invoices.has_previous %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                            href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.previous_page_number }}">
+                            Previous
+                        </a>
+
+                    </li>
 
                     {% endif %}
 
 
-                    {% empty %}
+                    <li class="page-item active">
 
-                    <tr>
+                        <span class="page-link">
+                            Page {{ invoices.number }}
+                            of {{ invoices.paginator.num_pages }}
+                        </span>
 
-                        <td colspan="11"
-                            class="text-center">
-                            No invoices found.
-                        </td>
+                    </li>
 
-                    </tr>
 
-                    {% endfor %}
+                    {% if invoices.has_next %}
 
-                </tbody>
+                    <li class="page-item">
 
-            </table>
+                        <a class="page-link"
+                            href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.next_page_number }}">
+                            Next
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+            {% endif %}
+
+
+            {% if invoices.paginator %}
+
+            <p class="text-center">
+                Total matches:
+                {{ invoices.paginator.count }}
+            </p>
+
+            {% endif %}
 
         </div>
 
-
-        <!-- Pagination -->
-        {% if invoices.has_other_pages %}
-
-        <nav>
-
-            <ul class="pagination justify-content-center">
-
-                {% if invoices.has_previous %}
-
-                <li class="page-item">
-
-                    <a class="page-link"
-                       href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.previous_page_number }}">
-                        Previous
-                    </a>
-
-                </li>
-
-                {% endif %}
-
-
-                <li class="page-item active">
-
-                    <span class="page-link">
-                        Page {{ invoices.number }}
-                        of {{ invoices.paginator.num_pages }}
-                    </span>
-
-                </li>
-
-
-                {% if invoices.has_next %}
-
-                <li class="page-item">
-
-                    <a class="page-link"
-                       href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.next_page_number }}">
-                        Next
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-
-        {% endif %}
-
-        {% if invoices.paginator %}
-
-        <p class="text-center">Total matches:{{ invoices.paginator.count }}</p>
-
-        {% endif %}
-
-    </div>
-
-</main>
+    </main>
 
 <!-- Sidebar Script -->
 <script>
