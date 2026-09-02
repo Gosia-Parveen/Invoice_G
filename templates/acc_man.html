@@ -81,7 +81,13 @@
         <!-- Sidebar (Pushes content, appears below navbar) -->
     <div id="sidebar" class=" text-white">
      <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Account_Manager</h5>
+      <h5 class="mb-0">
+    {% if user.is_superuser %}
+        Billing Admin
+    {% else %}
+        Account Manager ({{ user.first_name }})
+    {% endif %}
+</h5>
         <button type="button" class="btn-close btn-close-white" id="closeSidebar"></button>
     </div>
       <ul class="navbar-nav flex-column px-3">
