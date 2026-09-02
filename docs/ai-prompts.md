@@ -15,7 +15,7 @@ If you did not use AI at all, say so here, and describe your process instead.
 ### What you corrected
 
 
-** DAY_1[30-08-02026]------------------------------------------------------------------------------
+## ** DAY_1[30-08-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>:
@@ -79,7 +79,7 @@ It told the post form in HTML is correct.
 I spotted that it was checking against username, not email address and so asked Ai to fixed in the view.py so that it will check corresponding to email IDs instead of actual username.
 
 
-** DAY_2[31-08-02026]------------------------------------------------------------------------------
+## ** DAY_2[31-08-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>:
@@ -175,7 +175,7 @@ Corrected the single = sign to == for comparison in the Django template language
 
 
 
-** DAY_3[01-09-02026]------------------------------------------------------------------------------
+## ** DAY_3[01-09-02026]------------------------------------------------------------------------------
 
     1.
 # <What you were trying to achieve>
@@ -235,7 +235,7 @@ Removed the duplicate Subscription <select> block and the extra </select> tag, f
 
 
 
-** DAY_4[02-09-02026]------------------------------------------------------------------------------
+## ** DAY_4[02-09-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>
