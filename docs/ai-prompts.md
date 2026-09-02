@@ -232,3 +232,102 @@ The AI identified that there were two <select> blocks for Subscription along wit
 
 ### What you corrected
 Removed the duplicate Subscription <select> block and the extra </select> tag, fixing the form structure.
+
+
+
+** DAY_4[02-09-02026]------------------------------------------------------------------------------
+
+    1.
+## <What you were trying to achieve>
+To add two more Account Managers and create enough subscriptions and invoices to properly test the system.
+
+### Prompt
+Generate data to add at least five new subscriptions, with two to three invoices for each subscription, so we could check the working of the site so far.
+
+### What you got
+Gave five to six subscription data and around eight to nine invoice data to fill in.
+
+### What you corrected
+Added more users and test data to make the system less empty and test the current functionality.
+                                                ============================================================
+    2.
+## <What you were trying to achieve>
+To move from application-level protection to Django Admin configuration while maintaining the required permission structure.
+
+### Prompt
+The application-level protection for Invoices and Credit Notes was already finished, so I wanted to move to the Django Admin configuration.
+
+### What you got
+Django Admin configuration matching the required permission structure, while the existing views.py continued providing ownership restrictions.
+
+### What you corrected
+Configured Django Admin permissions while keeping the additional ownership restrictions in views.py.
+                                                ============================================================
+    3.
+## <What you were trying to achieve>
+To fix the 404 error occurring when the system redirected to the login URL.
+
+### Prompt
+I encountered a error (pasted here Page not found (404) for /accounts/log). fix it.
+
+### What you got
+The AI suggested setting LOGIN_URL = '/' and logging in again to test the dashboard after redirection.
+
+### What you corrected
+Corrected the login URL configuration and tested the login session and dashboard access again.
+                                                ============================================================
+    4.
+## <What you were trying to achieve>
+To make the Subscription, Invoice, and Dashboard pages accessible correctly after login.
+
+### Prompt
+I could visit the Subscription page, but clicking Invoice showed an error and clicking Dashboard sent me back to the login page. I asked for a step-by-step guide to make the required changes.
+
+### What you got
+The AI identified the Django template issue and instructed to change request.GET.status=="Draft" to request.GET.status == "Draft" and fix similar occurrences.
+
+### What you corrected
+Corrected the Django template comparison syntax and related code so the pages could work correctly.
+                                                ============================================================
+    5.
+## <What you were trying to achieve>
+To make the displayed user name and role change dynamically according to the current logged-in user.
+
+### Prompt
+I wanted it to change according to the user, such as Billing Admin or Account Managers like Sam, Mia, and Kaz, instead of hardcoding Billing_Admin or Account manager .
+
+### What you got
+The AI changed the logic to use the current logged-in user's name and role dynamically.
+
+### What you corrected
+Removed the hardcoded Billing_Admin or Account manager and made the user name/role dynamic.
+                                                ============================================================
+    6.
+## <What you were trying to achieve>
+To make Account Managers see only the subscriptions where they are the owner or collaborator.
+
+### Prompt
+I found that the Account Manager Subscription page was showing subscriptions belonging to all owners instead of only the logged-in manager's subscriptions.
+
+### What you got
+The subscription filtering was updated according to the current Account Manager's owner and collaborator access.
+
+### What you corrected
+Made the Subscription page show only subscriptions where the logged-in Account Manager is the owner or collaborator.
+                                                ============================================================
+    7.
+## <What you were trying to achieve>
+To give the Billing Admin a collaborator field for adding an Account Manager to a subscription.
+
+### Prompt
+I noticed there was no collaborator field for the Billing Admin. I wanted the Admin to be able to add a collaborator, while the field would be visible but disabled for the Account Manager. Give appropriate code for it.
+
+### What you got
+Code to add collaborator field in invoice form with different access according to the user's role.
+
+### What you corrected
+Configured the collaborator field so the Billing Admin can add a collaborator, while the Account Manager can only see the field as disabled.
+                                                ============================================================
+
+
+
