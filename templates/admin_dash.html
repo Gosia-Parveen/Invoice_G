@@ -67,8 +67,113 @@
     .content-wrapper.shifted {
       margin-left: 250px;
     }
+
+    
+    /* =======================================OVERDUE INVOICE ALERTS========================================== */
+
+.overdue-alert-box {
+    background: #fff;
+    border-left: 5px solid #b50001;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.10);
+}
+
+.overdue-alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.overdue-alert-header h4 {
+    margin: 0;
+    color: #b50001;
+    font-weight: 600;
+}
+
+.overdue-alert-header p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.overdue-count {
+    background: #b50001;
+    color: white;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.overdue-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    padding: 15px;
+
+    margin-top: 10px;
+
+    background: #fff5f5;
+
+    border: 1px solid #f0cccc;
+
+    border-radius: 8px;
+}
+
+.alert-invoice-info {
+    flex: 1;
+}
+
+.invoice-number {
+    color: #b50001;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 7px;
+}
+
+.invoice-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    color: #555;
+
+    font-size: 14px;
+}
+
+.days-overdue {
+    color: #b50001;
+    font-weight: bold;
+}
+
+.dismiss-alert-btn {
+    border: none;
+    background: #b50001;
+    color: white;
+
+    padding: 8px 16px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.dismiss-alert-btn:hover {
+    background: #8f0001;
+}
+
   </style>
 </head>
+
 
 <body>
 
@@ -96,8 +201,25 @@
     <ul class="navbar-nav flex-column px-3">
       <li class="nav-item"><a class="nav-link" href="{% url 'admin_dash' %}">Dashboard</a></li>
       <li class="nav-item"><a class="nav-link" href="{% url 'subs_tab' %}">Subscription</a></li>
-      <li class="nav-item"><a class="nav-link" href="{% url 'invoice_list' %}">Invoice</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Account Manager</a></li>
+      <li class="nav-item">
+    <a class="nav-link d-flex justify-content-between align-items-center"
+       href="{% url 'invoice_list' %}">
+
+        <span>Invoice</span>
+
+        {% if overdue_alert_count > 0 %}
+            <span class="badge rounded-pill"
+                  style="
+                    background-color: #b50001;
+                    color: white;
+                    font-size: 12px;
+                  ">
+                {{ overdue_alert_count }}
+            </span>
+        {% endif %}
+
+    </a>
+</li>
       <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">LOGOUT</a></li>
     </ul>
   </div>
@@ -105,9 +227,246 @@
   <!-- Main Content -->
   <main class="container content-wrapper">
 
-  </main>
+<!-- ==============OVERDUE INVOICE ALERTS===================================================== -->
 
-  <!-- Script -->
+{% if overdue_alerts %}
+
+<div class="container-fluid mt-4">
+
+    <div class="overdue-alert-box">
+
+        <div class="overdue-alert-header">
+
+            <div>
+                <h4>
+                    🔔 Overdue Invoice Alerts
+                </h4>
+
+                <p>
+                    The following invoices are overdue and unpaid.
+                </p>
+            </div>
+
+            <span class="overdue-count">
+                {{ overdue_alert_count }}
+            </span>
+
+        </div>
+
+
+        {% for invoice in overdue_alerts %}
+
+        <div class="overdue-alert">
+
+            <div class="alert-invoice-info">
+
+                <div class="invoice-number">
+                    {{ invoice.invoice_number }}
+                </div>
+
+                <div class="invoice-details">
+
+                    <span>
+                        Amount:
+                        <strong>
+                            ₹{{ invoice.amount }}
+                        </strong>
+                    </span>
+
+                    <span>
+                        Due:
+                        <strong>
+                            {{ invoice.due_date|date:"d M Y" }}
+                        </strong>
+                    </span>
+
+                    <span class="days-overdue">
+
+                        {{ today|default:"" }}
+
+                        {% with days=invoice.due_date|timesince %}
+                            Overdue by {{ days }}
+                        {% endwith %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Dismiss Button -->
+
+            <form method="POST"
+                  action="{% url 'dismiss_overdue_alert' invoice.id %}">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="dismiss-alert-btn">
+
+                    Dismiss
+
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+<br>
+<br>
+
+    <!-- #################    ROW 1     ########################-->
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Invoices Issued</h5>
+            <h2>{{ invoices_issued }}</h2>
+            <a href="#" class="btn btn-primary btn1">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Revenue Collected</h5>
+            <h2>₹{{ revenue_collected }}</h2>
+            <a href="#" class="btn btn-primary btn1">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #################    ROW 2     ########################-->
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Receivables</h5>
+            <h2>₹{{ receivables }}</h2>
+            <a href="#" class="btn btn-primary btn1">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Overdue Invoices</h5>
+            <h2>{{ overdue_invoices }}</h2>
+            <a href="#" class="btn btn-primary btn1">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #################    ROW 3     ########################-->
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5>Invoices by Status</h5>
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5>Invoices by Plan</h5>
+            <canvas id="planChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- #################    ROW 4     ########################-->
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5>Revenue Collected - Last 8 Weeks</h5>
+            <canvas id="revenueChart" ></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+  <!-- Script **********************chart1-->
+  <div id="statusData" data-status='{{ invoice_status }}'></div>
+  <script>
+    const statusData = JSON.parse(
+      document.getElementById('statusData').dataset.status
+    );
+
+    new Chart(document.getElementById('statusChart'), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(statusData),
+        datasets: [{
+          data: Object.values(statusData)
+        }]
+      }
+    });
+  </script>
+
+  <!-- Script **********************chart2-->
+  <div id="planData" data-plan='{{ invoice_plan }}'></div>
+
+  <script>
+    const planData = JSON.parse(
+      document.getElementById('planData').dataset.plan
+    );
+
+    new Chart(document.getElementById('planChart'), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(planData),
+        datasets: [{
+          data: Object.values(planData)
+        }]
+      }
+    });
+  </script>
+
+
+  <!-- Script **********************8WEEK-->
+  <div id="revenueData" data-revenue='{{ weekly_revenue }}'></div>
+  <script>
+    const revenueData = JSON.parse(
+        document.getElementById('revenueData').dataset.revenue
+    );
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: Object.keys(revenueData),
+            datasets: [{
+                label: 'Revenue (₹)',
+                data: Object.values(revenueData),
+                fill: false
+            }]
+        },
+        options: {plugins: {legend: {labels: {color: '#090300'}}}, //FONT COLOR CHANGED HERE
+            scales: {x: {ticks: {color: '#090300'}},
+                      y: {ticks: {color: '#090300'}}}}});
+  </script>
+
+  <!-- Script **********************sidebar-->
   <script>
     const sidebar = document.getElementById('sidebar');
     const content = document.querySelector('.content-wrapper');
