@@ -84,6 +84,8 @@
 <body>
 
     <!-- Navbar (Fixed and always visible) -->
+
+    <!-- Navbar (Fixed and always visible) -->
     <nav class="navbar fixed-top text-white">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -91,8 +93,8 @@
                     style="background-color: #ef8d58;">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <h3 style="color: #b50001; font-size: 20px; font-family: cursive; padding-left: 320px;"> Invoice_G </h3>
+                <h3 style="color: #b50001; font-size: 30px; font-family: 'Times New Roman', Times, serif; padding-left: 1200px;">
+          Invoice_G </h3>
             </div>
     </nav>
 
@@ -100,12 +102,12 @@
     <div id="sidebar" class=" text-white">
         <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                {% if user.is_superuser %}
-                    Billing Admin
-                {% else %}
-                    Account Manager ({{ user.first_name }})
-                {% endif %}
-            </h5>
+    {% if user.is_superuser %}
+        Billing Admin
+    {% else %}
+        Account Manager ({{ user.first_name }})
+    {% endif %}
+</h5>
             <button type="button" class="btn-close btn-close-white" id="closeSidebar"></button>
         </div>
         <ul class="navbar-nav flex-column px-3">
@@ -121,11 +123,22 @@
             </a>
         {% endif %}
     </li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'subs_tab' %}">Subscription</a></li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'invoice_list' %}">Invoice</a></li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'subs_tab' %}">
+            Subscription
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'invoice_list' %}">
+            Invoice
+        </a>
+    </li>
 
 </ul>
     </div>
+
 
     <!-- Main Content -->
     <main class="container content-wrapper">
