@@ -193,14 +193,211 @@ def dismiss_overdue_alert(request, invoice_id):
 
 
 # -------------------------- ACCOUNT MANAGER DASHBOARD ----------------------
-
 @login_required
 def acc_man(request):
 
+    # Only Account Managers can access this dashboard
     if not request.user.groups.filter(name="Account Manager").exists():
         return redirect("login")
 
-    return render(request, "acc_man.html")
+    today = timezone.localdate()
+    month_start = today.replace(day=1)
+
+    # ----------------------------------------------------------------
+    # SUBSCRIPTIONS BELONGING TO THIS ACCOUNT MANAGER
+    # Owner OR Collaborator
+    # ----------------------------------------------------------------
+
+    manager_subscriptions = Subscription.objects.filter(
+        is_archived=False
+    ).filter(
+        Q(owner=request.user) |
+        Q(collaborators=request.user)
+    ).distinct()
+
+    # ----------------------------------------------------------------
+    # INVOICES BELONGING TO THOSE SUBSCRIPTIONS
+    # ----------------------------------------------------------------
+
+    manager_invoices = Invoice.objects.filter(
+        subscription__in=manager_subscriptions
+    )
+
+    # ----------------------------------------------------------------
+    # CARD 1 - INVOICES ISSUED
+    # ----------------------------------------------------------------
+
+    invoices_issued = manager_invoices.filter(
+        status='Issued',
+        created_at__date__gte=month_start,
+        created_at__date__lte=today
+    ).count()
+
+    # ----------------------------------------------------------------
+    # CARD 2 - REVENUE COLLECTED
+    # ----------------------------------------------------------------
+
+    revenue_collected = manager_invoices.filter(
+        status='Paid',
+        due_date__gte=month_start,
+        due_date__lte=today
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    # ----------------------------------------------------------------
+    # CARD 3 - RECEIVABLES
+    # ----------------------------------------------------------------
+
+    receivables = manager_invoices.filter(
+        status='Issued'
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    # ----------------------------------------------------------------
+    # CARD 4 - OVERDUE INVOICES
+    # ----------------------------------------------------------------
+
+    overdue_invoices = manager_invoices.filter(
+        status='Issued',
+        due_date__lt=today
+    ).count()
+
+    # ----------------------------------------------------------------
+    # OVERDUE ALERTS
+    
+    overdue_alerts = []
+
+    overdue_queryset = manager_invoices.filter(
+        status='Issued',
+        due_date__lt=today
+    ).select_related(
+        'subscription'
+    ).order_by(
+        'due_date'
+    )
+
+    for invoice in overdue_queryset:
+
+        latest_dismissal = invoice.alert_dismissals.order_by(
+            '-dismissed_at'
+        ).first()
+
+        # If there is no dismissal, show the alert
+        if latest_dismissal is None:
+
+            invoice.days_overdue = (
+                today - invoice.due_date
+            ).days
+
+            overdue_alerts.append(invoice)
+
+        # If invoice was updated after dismissal,
+        # show the alert again
+        elif invoice.updated_at > latest_dismissal.dismissed_at:
+
+            invoice.days_overdue = (
+                today - invoice.due_date
+            ).days
+
+            overdue_alerts.append(invoice)
+
+    # ----------------------------------------------------------------
+    # CHART 1 - INVOICES BY STATUS
+    # ----------------------------------------------------------------
+
+    invoice_status = {
+        'Draft': manager_invoices.filter(
+            status='Draft'
+        ).count(),
+
+        'Issued': manager_invoices.filter(
+            status='Issued'
+        ).count(),
+
+        'Paid': manager_invoices.filter(
+            status='Paid'
+        ).count(),
+
+        'Void': manager_invoices.filter(
+            status='Void'
+        ).count(),
+    }
+
+    invoice_status_json = json.dumps(invoice_status)
+
+    # ----------------------------------------------------------------
+    # CHART 2 - INVOICES BY PLAN
+    # ----------------------------------------------------------------
+
+    invoice_plan = {}
+
+    for invoice in manager_invoices.select_related(
+        'subscription'
+    ):
+
+        plan_name = invoice.subscription.plan
+
+        invoice_plan[plan_name] = (
+            invoice_plan.get(plan_name, 0) + 1
+        )
+
+    invoice_plan_json = json.dumps(invoice_plan)
+
+    # ----------------------------------------------------------------
+    # CHART 3 - REVENUE COLLECTED LAST 8 WEEKS
+    # ----------------------------------------------------------------
+
+    eight_weeks_ago = today - timezone.timedelta(
+        weeks=8
+    )
+
+    weekly_revenue = {}
+
+    for invoice in manager_invoices.filter(
+        status='Paid',
+        due_date__gte=eight_weeks_ago,
+        due_date__lte=today
+    ):
+
+        week_start = invoice.due_date - timezone.timedelta(
+            days=invoice.due_date.weekday()
+        )
+
+        week_name = week_start.strftime('%d %b')
+
+        weekly_revenue[week_name] = (
+            weekly_revenue.get(week_name, 0)
+            + float(invoice.amount)
+        )
+
+    weekly_revenue_json = json.dumps(
+        weekly_revenue
+    )
+
+    # ----------------------------------------------------------------
+    # SEND DATA TO TEMPLATE
+    # ----------------------------------------------------------------
+
+    return render(
+        request,
+        'acc_man.html',
+        {
+            'invoices_issued': invoices_issued,
+            'revenue_collected': revenue_collected,
+            'receivables': receivables,
+            'overdue_invoices': overdue_invoices,
+
+            'overdue_alerts': overdue_alerts,
+            'overdue_alert_count': len(overdue_alerts),
+
+            'invoice_status': invoice_status_json,
+            'invoice_plan': invoice_plan_json,
+            'weekly_revenue': weekly_revenue_json,
+        }
+    )
+
 
 
 # -------------------------- LOGOUT ----------------------------------------
