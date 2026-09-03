@@ -1,135 +1,782 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}ANDi Banking{% endblock title %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-      body {
-      background-color: #fec4a5;  /*light gray like your screenshot */
-      padding-top: 70px; /* Leave space for navbar */
-      margin: 0;
-      
-    }
-    .header {
-      background-color: #e45b11;
-      padding: 15px 30px;
-      border-bottom: 2px solid; /* line at top */
-      display: flex;
-      align-items: center;
-    }
-    .header i {
-      margin-right: 10px;
-    }
-    .card {
-      margin-bottom: 30px; /* add vertical spacing between cards */
-    }
-    .content-card {
-      margin: 30px auto;
-      max-width: 1000px;
-      background: white;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
 
-      .navbar-brand {
-        font-family: 'Brush Script MT', cursive;
-      }
+<head>
 
-      #sidebar {
-        position: fixed;
-        top: 60px; /* Below the navbar */
-        left: 0;
-        width: 250px;
-        height: calc(100% - 60px);
-        background-color: #b50001;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 1040;
-        overflow-y: auto;
-      }
+  <meta charset="utf-8">
 
-      #sidebar.show {
-        transform: translateX(0);
-      }
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      .content-wrapper {
-        transition: margin-left 0.3s ease-in-out;
-      }
+  <title>Account_Manager_Dashboard</title>
 
-      .content-wrapper.shifted {
-        margin-left: 250px;
-      }
-    </style>
-  </head>
-  <body>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Navbar (Fixed and always visible) -->
-    <nav class="navbar fixed-top text-white">
-      <div class="container-fluid d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-          <button class="navbar-toggler" type="button" id="toggleSidebar" aria-label="Toggle navigation" style="background-color: #ef8d58;">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <h3 style="color: #b50001; font-size: 20px; font-family: cursive; padding-left: 320px;"> Invoice_G </h3>
-        </div>
-     </nav>
-
-        <!-- Sidebar (Pushes content, appears below navbar) -->
-    <div id="sidebar" class=" text-white">
-     <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">
-    {% if user.is_superuser %}
-        Billing Admin
-    {% else %}
-        Account Manager ({{ user.first_name }})
-    {% endif %}
-</h5>
-        <button type="button" class="btn-close btn-close-white" id="closeSidebar"></button>
-    </div>
-      <ul class="navbar-nav flex-column px-3">
-        <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/">Subscription</a></li>
-        <li class="nav-item"><a class="nav-link" href="/">Invoice</a></li>         
-      </ul>
-    </div>
-
-    <!-- Main Content -->
-    <main class="container content-wrapper">
-
-    </main>
-
-    <!-- Script -->
-  <script>
-  const sidebar = document.getElementById('sidebar');
-  const content = document.querySelector('.content-wrapper');
-  const toggleBtn = document.getElementById('toggleSidebar');
-  const closeBtn = document.getElementById('closeSidebar');
-
-  // Load sidebar state on page load
-  document.addEventListener("DOMContentLoaded", function () {
-    if (localStorage.getItem('sidebarOpen') === 'true') {
-      sidebar.classList.add('show');
-      content.classList.add('shifted');
-    }
-  });
-
-  toggleBtn.addEventListener('click', () => {
-    const isOpen = sidebar.classList.toggle('show');
-    content.classList.toggle('shifted', isOpen);
-    localStorage.setItem('sidebarOpen', isOpen);
-  });
-
-  closeBtn.addEventListener('click', () => {
-    sidebar.classList.remove('show');
-    content.classList.remove('shifted');
-    localStorage.setItem('sidebarOpen', false);
-  });
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js">
   </script>
 
 
-  </body>
+  <style>
+    body {
+
+      background: linear-gradient(to left,
+          #faec87,
+          #fcba95);
+
+      padding-top: 70px;
+
+      margin: 0;
+    }
+
+
+    /* ================= HEADER ================= */
+
+    .header {
+
+      background-color: #e45b11;
+
+      padding: 15px 30px;
+
+      border-bottom: 2px solid;
+
+      display: flex;
+
+      align-items: center;
+    }
+
+
+    /* ================= CARDS ================= */
+
+    .card {
+
+      background: linear-gradient(to right,
+          #f87557,
+          #fda771);
+
+      margin-bottom: 30px;
+
+      border-radius: 5px;
+
+      box-shadow:
+        0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .card h5,
+    .card p {
+
+      color: #b50001;
+    }
+
+
+    /* ================= BUTTON ================= */
+
+    .btn1 {
+
+      background: linear-gradient(to left,
+          #bb444a,
+          #601f3d);
+
+      border: #bb444a;
+    }
+
+
+    .btn1:hover {
+
+      background: linear-gradient(to right,
+          #fa935b,
+          #f1cb4b);
+    }
+
+
+    /* ================= SIDEBAR ================= */
+
+    #sidebar {
+
+      position: fixed;
+
+      top: 60px;
+
+      left: 0;
+
+      width: 250px;
+
+      height: calc(100% - 60px);
+
+      background-color: #b50001;
+
+      transform: translateX(-100%);
+
+      transition:
+        transform 0.3s ease-in-out;
+
+      z-index: 1040;
+
+      overflow-y: auto;
+    }
+
+
+    #sidebar.show {
+
+      transform: translateX(0);
+    }
+
+
+    .content-wrapper {
+
+      transition:
+        margin-left 0.3s ease-in-out;
+    }
+
+
+    .content-wrapper.shifted {
+
+      margin-left: 250px;
+    }
+
+
+    /* =====================================================
+       OVERDUE INVOICE ALERTS
+    ===================================================== */
+
+    .overdue-alert-box {
+
+      background: #fff;
+
+      border-left: 5px solid #b50001;
+
+      border-radius: 10px;
+
+      padding: 20px;
+
+      box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.10);
+    }
+
+
+    .overdue-alert-header {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-bottom: 15px;
+    }
+
+
+    .overdue-alert-header h4 {
+
+      margin: 0;
+
+      color: #b50001;
+
+      font-weight: 600;
+    }
+
+
+    .overdue-alert-header p {
+
+      margin: 5px 0 0;
+
+      color: #666;
+
+      font-size: 14px;
+    }
+
+
+    .overdue-count {
+
+      background: #b50001;
+
+      color: white;
+
+      min-width: 32px;
+
+      height: 32px;
+
+      border-radius: 50%;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      font-weight: bold;
+    }
+
+
+    .overdue-alert {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 20px;
+
+      padding: 15px;
+
+      margin-top: 10px;
+
+      background: #fff5f5;
+
+      border: 1px solid #f0cccc;
+
+      border-radius: 8px;
+    }
+
+
+    .alert-invoice-info {
+
+      flex: 1;
+    }
+
+
+    .invoice-number {
+
+      color: #b50001;
+
+      font-weight: bold;
+
+      font-size: 16px;
+
+      margin-bottom: 7px;
+    }
+
+
+    .invoice-details {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 20px;
+
+      color: #555;
+
+      font-size: 14px;
+    }
+
+
+    .days-overdue {
+
+      color: #b50001;
+
+      font-weight: bold;
+    }
+
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 768px) {
+
+      .overdue-alert {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+      }
+
+
+      .invoice-details {
+
+        flex-direction: column;
+
+        gap: 5px;
+      }
+
+    }
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- Navbar (Fixed and always visible) -->
+  <nav class="navbar fixed-top text-white">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <button class="navbar-toggler" type="button" id="toggleSidebar" aria-label="Toggle navigation"
+          style="background-color: #ef8d58;">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <h3
+          style="color: #b50001; font-size: 30px; font-family: 'Times New Roman', Times, serif; padding-left: 1200px;">
+          Invoice_G </h3>
+      </div>
+  </nav>
+
+  <!-- Sidebar (Pushes content, appears below navbar) -->
+  <div id="sidebar" class=" text-white">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        {% if user.is_superuser %}
+        Billing Admin
+        {% else %}
+        Account Manager ({{ user.first_name }})
+        {% endif %}
+      </h5>
+      <button type="button" class="btn-close btn-close-white" id="closeSidebar"></button>
+    </div>
+
+    <ul class="navbar-nav flex-column px-3">
+      <li class="nav-item"><a class="nav-link" href="{% url 'acc_man' %}">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'subs_tab' %}">Subscription</a></li>
+      <li class="nav-item"><a class="nav-link d-flex justify-content-between align-items-center"
+          href="{% url 'invoice_list' %}">
+
+          <span>Invoice</span>
+          {% if overdue_alert_count > 0 %}
+          <span class="badge rounded-pill" style="
+                    background-color: #b50001;
+                    color: white;
+                    font-size: 12px;
+                  ">
+            {{ overdue_alert_count }}
+          </span>
+          {% endif %}</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">LOGOUT</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ======================= MAIN CONTENT============================== -->
+  <main class="container content-wrapper">
+    <!-- ==================== OVERDUE ALERTS============================ -->
+    {% if overdue_alerts %}
+    <div class="container-fluid mt-4">
+      <div class="overdue-alert-box">
+        <div class="overdue-alert-header">
+          <div>
+            <h4> 🔔 Overdue Invoice Alerts</h4>
+            <p>The following invoices are overdue and unpaid.</p>
+          </div>
+
+          <span class="overdue-count">
+            {{ overdue_alert_count }}
+          </span>
+        </div>
+        {% for invoice in overdue_alerts %}
+        <div class="overdue-alert">
+          <div class="alert-invoice-info">
+            <div class="invoice-number">
+              {{ invoice.invoice_number }}
+            </div>
+            <div class="invoice-details">
+              <span>Amount:
+                <strong>
+                  ₹{{ invoice.amount }}
+                </strong>
+              </span>
+
+              <span>Due:
+                <strong>
+                  {{ invoice.due_date|date:"d M Y" }}
+                </strong>
+              </span>
+
+              <span class="days-overdue">
+                {{ invoice.days_overdue }}
+                day{{ invoice.days_overdue|pluralize }}
+                overdue
+              </span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% endif %}
+    <br>
+    <br>
+    <!-- ====================ROW 1============================ -->
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Invoices Issued</h5>
+            <h2>{{ invoices_issued }}</h2>
+            <a href="#" class="btn btn-primary btn1">This Month</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Revenue Collected</h5>
+            <h2>₹{{ revenue_collected }}</h2>
+            <a href="#" class="btn btn-primary btn1">This Month</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- =======================ROW 2===================== -->
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Receivables</h5>
+            <h2>₹{{ receivables }}</h2>
+            <a href="#" class="btn btn-primary btn1">This Month</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Overdue Invoices</h5>
+            <h2>{{ overdue_invoices }}</h2>
+            <a href="#" class="btn btn-primary btn1">This Month</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================ROW 3=========================== -->
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5>Invoices by Status</h5>
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5>Invoices by Plan</h5>
+            <canvas id="planChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================ROW 4===================== -->
+
+    <div class="row">
+
+
+      <div class="col-sm-6">
+
+
+        <div class="card">
+
+
+          <div class="card-body">
+
+
+            <h5>
+              Revenue Collected - Last 8 Weeks
+            </h5>
+
+
+            <canvas id="revenueChart"></canvas>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+  </main>
+
+
+
+  <!-- ======================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+  <!-- ======================== STATUS CHART1========================== -->
+
+  <div id="statusData" data-status='{{ invoice_status }}'>
+  </div>
+
+
+  <script>
+
+    const statusData = JSON.parse(
+      document
+        .getElementById('statusData')
+        .dataset
+        .status
+    );
+
+
+    new Chart(
+      document.getElementById('statusChart'),
+      {
+
+        type: 'pie',
+
+        data: {
+
+          labels:
+            Object.keys(statusData),
+
+          datasets: [{
+
+            data:
+              Object.values(statusData)
+
+          }]
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+
+  <!-- ===================PLAN CHART 2============================= -->
+
+  <div id="planData" data-plan='{{ invoice_plan }}'>
+  </div>
+
+
+  <script>
+
+    const planData = JSON.parse(
+      document
+        .getElementById('planData')
+        .dataset
+        .plan
+    );
+
+
+    new Chart(
+      document.getElementById('planChart'),
+      {
+
+        type: 'pie',
+
+        data: {
+
+          labels:
+            Object.keys(planData),
+
+          datasets: [{
+
+            data:
+              Object.values(planData)
+
+          }]
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+
+  <!-- =========================8 WEEK REVENUE CHART============================== -->
+
+  <div id="revenueData" data-revenue='{{ weekly_revenue }}'>
+  </div>
+
+
+  <script>
+
+    const revenueData = JSON.parse(
+      document
+        .getElementById('revenueData')
+        .dataset
+        .revenue
+    );
+
+
+    new Chart(
+      document.getElementById('revenueChart'),
+      {
+
+        type: 'line',
+
+        data: {
+
+          labels:
+            Object.keys(revenueData),
+
+          datasets: [{
+
+            label: 'Revenue (₹)',
+
+            data:
+              Object.values(revenueData),
+
+            fill: false
+
+          }]
+
+        },
+
+
+        options: {
+
+          plugins: {
+
+            legend: {
+
+              labels: {
+
+                color: '#090300'
+
+              }
+
+            }
+
+          },
+
+
+          scales: {
+
+            x: {
+
+              ticks: {
+
+                color: '#090300'
+
+              }
+
+            },
+
+
+            y: {
+
+              ticks: {
+
+                color: '#090300'
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+  </script>
+
+  <!-- ======================SIDEBAR SCRIPT================================= -->
+
+  <script>
+
+    const sidebar =
+      document.getElementById('sidebar');
+
+    const content =
+      document.querySelector(
+        '.content-wrapper'
+      );
+
+    const toggleBtn =
+      document.getElementById(
+        'toggleSidebar'
+      );
+
+    const closeBtn =
+      document.getElementById(
+        'closeSidebar'
+      );
+
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        if (
+          localStorage.getItem(
+            'sidebarOpen'
+          ) === 'true'
+        ) {
+
+          sidebar.classList.add('show');
+
+          content.classList.add(
+            'shifted'
+          );
+
+        }
+
+      }
+    );
+
+
+    toggleBtn.addEventListener(
+      'click',
+      () => {
+
+        const isOpen =
+          sidebar.classList.toggle(
+            'show'
+          );
+
+        content.classList.toggle(
+          'shifted',
+          isOpen
+        );
+
+
+        localStorage.setItem(
+          'sidebarOpen',
+          isOpen
+        );
+
+      }
+    );
+
+
+    closeBtn.addEventListener(
+      'click',
+      () => {
+
+        sidebar.classList.remove(
+          'show'
+        );
+
+        content.classList.remove(
+          'shifted'
+        );
+
+
+        localStorage.setItem(
+          'sidebarOpen',
+          false
+        );
+
+      }
+    );
+
+  </script>
+
+
+</body>
+
 </html>
