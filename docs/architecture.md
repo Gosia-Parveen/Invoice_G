@@ -9,21 +9,37 @@ Answer each of these, in your own words, once the system has taken real shape.
 - What did you decide *not* to build, and why?
 
 
-DAY_1[30-08-2026]----------------------------------
+
+** ## ACRCHITECTURE **
 
                                                            LOGIN PAGE
                                                                │
                                                        Email + Password
                                                                │
-                                                  ┌────────────┴──────────────┐
-                                                  │                           │
-                                                Billing Admin               Account Manager
-                                                   │                          │
-                                                   ▼                          ▼
-                                                Admin Dashboard               AM Dashboard
-                                                  |-Home                        |-Home
-                                                  |-Subscription                |-Subscription(same for both admin+manager)
-                                                      |-Add New                     |-Add New
-                                                      |-Edit existing               |-Edit existing
-                                                      |-Archive/Restore             |-Archive/Restore
-                                                  |-Invoice                     |-Invoice
+                                            ┌──────────────────┴──────────────────────┐
+                                            │                                         │
+                                          Billing Admin                             Account Manager
+                                             │                                        │
+                                             ▼                                        ▼
+                                        Admin Dashboard                             AM Dashboard
+                                          |-Dashboard                                    |-Dashboard
+                                          |   |-4 cards Features:                        |  |-4 cards Features:        
+                                          |       |-Invoice Issued                       |     |-Invoice Issued       
+                                          |       |-Revenue Collected                    |      |-Revenue Collected    
+                                          |       |-Overdue Invoice                      |      |-Overdue Invoice      
+                                          |       |-Receive                              |      |-Receive
+                                          |   |-2 Plan based chart                       |  |-2 Plan based chart        
+                                          |   |-Overdue Invoice Alerts                   |  |-Overdue Invoice Alerts  
+                                          |   |-Dismiss Button for alert                 |  |-Dismiss Button for alert
+                                          |                                              |
+                                          |-Subscription                                 |-Subscription(same for both admin+manager)
+                                          |   |-Add New                                  |  |-Add New
+                                          |   |-Edit existing                            |  |-Edit existing
+                                          |   |-Archive/Restore                          |
+                                          |-Invoice                                      |-Invoice
+                                          |   |-Add New                                  |  |-Add New
+                                          |   |-Edit existing                            |  |-Edit existing
+                                          |   |-Mark As                                  |  |-Read-only (Mark as status)
+                                          |   |-Issued,Void,Paid                         |      
+                                          |   |-Add Credit Note                          |
+                                          |-Logout                                       |-Logout
