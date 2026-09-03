@@ -1,8 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Subscription
+from .models import Subscription, Invoice, CreditNote
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.utils import timezone
+from django.db.models import Sum, Count
+from datetime import date
+import json
+from .models import Invoice, InvoiceAlertDismissal
+
 
 
 # -------------------------- LOGIN ----------------------------------------
@@ -399,7 +409,6 @@ def acc_man(request):
     )
 
 
-
 # -------------------------- LOGOUT ----------------------------------------
 
 def logout(request):
@@ -431,8 +440,7 @@ def subs_tab(request):
         "subscriptions": subscriptions
     })
 
-
-# -------------------------------Subs_FORM--------------------------------------------
+# -------------------------------Subs_add_new_FORM--------------------------------------------
 @login_required
 def add_subscription(request):
 
@@ -452,8 +460,10 @@ def add_subscription(request):
             owner_id=request.POST.get("owner")
         )
 
-        collaborator_ids = request.POST.getlist("collaborators")
-        subscription.collaborators.set(collaborator_ids)
+        # Only Billing Admin can assign collaborators
+        if request.user.is_superuser:
+            collaborator_ids = request.POST.getlist("collaborators")
+            subscription.collaborators.set(collaborator_ids)
 
         return redirect("subs_tab")
 
@@ -473,6 +483,7 @@ def edit_subscription(request, id):
     )
 
     if request.method == "POST":
+
         subscription.customer_name = request.POST.get("customer_name")
         subscription.billing_email = request.POST.get("billing_email")
         subscription.plan = request.POST.get("plan")
@@ -483,13 +494,54 @@ def edit_subscription(request, id):
 
         subscription.save()
 
+        # Only Billing Admin can change collaborators
+        if request.user.is_superuser:
+            collaborator_ids = request.POST.getlist("collaborators")
+            subscription.collaborators.set(collaborator_ids)
+
         return redirect("subs_tab")
 
     return render(request, "new_sub.html", {
         "subscription": subscription,
         "account_managers": account_managers
     })
+# -------------------------------Subs_FORM_ARCHIEVE----------------------------------------------------
+@login_required
+def archive_subscription(request, id):
 
+    subscription = get_object_or_404(
+        Subscription,
+        id=id
+    )
+
+    if request.method != "POST":
+        return redirect('subs_tab')
+
+    # Account Manager can archive only subscriptions
+    # they own or collaborate on
+    if request.user.groups.filter(name='Account Manager').exists():
+
+        if (
+            subscription.owner != request.user
+            and not subscription.collaborators.filter(
+                id=request.user.id
+            ).exists()
+        ):
+            messages.error(
+                request,
+                'You do not have permission to archive this subscription.'
+            )
+            return redirect('subs_tab')
+
+    subscription.is_archived = True
+    subscription.save(update_fields=['is_archived'])
+
+    messages.success(
+        request,
+        'Subscription archived successfully.'
+    )
+
+    return redirect('subs_tab')
 
 
 # -------------------------------LIST ALL INVOICES----------------------------------------------------
@@ -500,15 +552,21 @@ def invoice_list(request):
         'subscription',
         'subscription__owner'
     ).prefetch_related(
+        'subscription__collaborators',
         'credit_note'
     ).all()
 
 # -----------------------------ROLE-BASED ACCESS------------------------------------------
 
+    # Account Manager can see invoices where they are
+    # either the Owner OR a Collaborator
     if request.user.groups.filter(name='Account Manager').exists():
-        invoices = invoices.filter(     # Account Manager sees only invoices belonging to subscriptions they own
-            subscription__owner=request.user
-    )
+        invoices = invoices.filter(
+            Q(subscription__owner=request.user) |
+            Q(subscription__collaborators=request.user)
+        ).distinct()
+
+
     # ---------------- SEARCH ----------------
 
     search = request.GET.get('search', '').strip()
@@ -578,8 +636,7 @@ def invoice_list(request):
     account_managers = request.user.__class__.objects.filter(
         groups__name='Account Manager'
     ).distinct()
-
-    #change according to manager
+#
     is_account_manager = request.user.groups.filter(
         name='Account Manager'
     ).exists()
@@ -681,8 +738,7 @@ def edit_invoice(request, invoice_id):
         is_archived=False
     ).select_related('owner')
 
-
-    #change according to manager
+#
     if request.user.groups.filter(name='Account Manager').exists():
         subscriptions = subscriptions.filter(
             owner=request.user
@@ -766,25 +822,23 @@ def edit_invoice(request, invoice_id):
         }
     )
 
-
 # -------------------------------ISSUE INVOICES----------------------------------------------------
 @login_required
 def issue_invoice(request, invoice_id):
+
+    # Only Billing Admin can issue invoices
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to issue invoices.'
+        )
+        return redirect('invoice_list')
 
     invoice = get_object_or_404(
         Invoice,
         id=invoice_id
     )
 
-    #change according to manager
-    if request.user.groups.filter(name='Account Manager').exists():
-        if invoice.subscription.owner != request.user:
-            messages.error(
-                request,
-                'You do not have permission to issue this invoice.'
-            )
-            return redirect('invoice_list')
-#
     if request.method != 'POST':
         return redirect('invoice_list')
 
@@ -822,24 +876,23 @@ def issue_invoice(request, invoice_id):
 
     return redirect('invoice_list')
 
-
 # -------------------------------MARK AS PAID INVOICES----------------------------------------------------
 @login_required
 def mark_invoice_paid(request, invoice_id):
+
+    # Only Billing Admin can mark invoices as Paid
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to mark invoices as Paid.'
+        )
+        return redirect('invoice_list')
 
     invoice = get_object_or_404(
         Invoice,
         id=invoice_id
     )
-    #change according to manager
-    if request.user.groups.filter(name='Account Manager').exists():
-        if invoice.subscription.owner != request.user:
-            messages.error(
-                request,
-                'You do not have permission to mark this invoice as paid.'
-            )
-            return redirect('invoice_list')
-    #
+
     if request.method != 'POST':
         return redirect('invoice_list')
 
@@ -868,24 +921,22 @@ def mark_invoice_paid(request, invoice_id):
 
     return redirect('invoice_list')
 
-
 # -------------------------------VOID INVOICES----------------------------------------------------
 @login_required
 def void_invoice(request, invoice_id):
+
+    # Only Billing Admin can void invoices
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to void invoices.'
+        )
+        return redirect('invoice_list')
 
     invoice = get_object_or_404(
         Invoice,
         id=invoice_id
     )
-    #change according to manager
-    if request.user.groups.filter(name='Account Manager').exists():
-        if invoice.subscription.owner != request.user:
-            messages.error(
-                request,
-                'You do not have permission to void this invoice.'
-            )
-            return redirect('invoice_list')
-    #
 
     if request.method != 'POST':
         return redirect('invoice_list')
@@ -931,7 +982,9 @@ def void_invoice(request, invoice_id):
 # -------------------------------CREDIT_NOTE INVOICES----------------------------------------------------
 @login_required
 def create_credit_note(request, invoice_id):
-
+    if not request.user.is_superuser:
+        return redirect('acc_man')
+    
     invoice = get_object_or_404(
         Invoice,
         id=invoice_id
@@ -983,3 +1036,5 @@ def create_credit_note(request, invoice_id):
     )
 
     return redirect('invoice_list')
+
+
