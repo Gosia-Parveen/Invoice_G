@@ -411,8 +411,7 @@ I logged in as an Account Manager and found that I could mark invoices as Issued
 The correction codes to restrict Account Manager from accessing and performing Billing Admin-level actions.
 
 ### What you corrected
-Restricted invoice status changes and collaborator management to the Billing Admin, while keeping Account Manager access to the features they are allowed to use.    
-
+Restricted invoice status changes and collaborator management to the Billing Admin, while keeping Account Manager access to the features they are allowed to use.   
                                                 =======================================================
     3.
 ## <What you were trying to achieve>
