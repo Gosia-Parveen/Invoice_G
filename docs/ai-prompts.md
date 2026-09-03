@@ -385,7 +385,6 @@ Updated the chart JavaScript to display the graph text in  hex code b50001.
                                                 =======================================================
 
 
-
 ## ** DAY_5[03-09-02026]------------------------------------------------------------------------------
     1.
 ## <What you were trying to achieve>
@@ -400,5 +399,59 @@ An Account Manager Dashboard with the same structure and features, filtered to t
 ### What you corrected
 Restricted the dashboard data to the Account Manager's own records and made invoice alerts visible without a dismiss button.
 
+                                                =======================================================
+    2.
+## <What you were trying to achieve>
+To restrict Account Managers from performing Billing Admin actions such as changing invoice status and adding collaborators.
+
+### Prompt
+I logged in as an Account Manager and found that I could mark invoices as Issued, Paid, or Void and could also add collaborators, even though these actions should only be available to the Billing Admin. So guide me to fix them.
+
+### What you got
+The correction codes to restrict Account Manager from accessing and performing Billing Admin-level actions.
+
+### What you corrected
+Restricted invoice status changes and collaborator management to the Billing Admin, while keeping Account Manager access to the features they are allowed to use.    
+
+                                                =======================================================
+    3.
+## <What you were trying to achieve>
+To display collaborator information clearly on both the Subscription and Invoice pages so that users can see which Account Managers are associated with the records.
+
+### Prompt
+I found that the Subscription page did not have a Collaborators column, and the Invoice page also did not have a Collaborator column. All other features were working correctly.
+so give me code for that.
+
+### What you got
+The existing Subscription and Invoice features were working, but collaborator information was not displayed in the tables.
+
+### What you corrected
+Added the required Collaborators column to the relevant pages and checked the connected templates and views to ensure the collaborator data is displayed correctly.
+                                                =======================================================
+    4.
+## <What you were trying to achieve>
+To implement subscription archiving so that subscriptions can be removed from the active list without permanently deleting their records from the database.
+
+### Prompt
+I wanted to implement Subscription Archiving without deleting subscription records from the database.
+
+### What you got
+An archiving system where a subscription can be marked as archived instead of being permanently deleted.
+
+### What you corrected
+Added an archive mechanism using an archive status/field, filtered archived subscriptions from the active subscription list, and preserved the original records in the database.
+                                                =======================================================
+    5.
+## <What you were trying to achieve>
+To uniform the entire interface according to the one pattern.
+
+### Prompt
+I want to standardize the complete interface around the styling I provided and make the Bootstrap styling consistent across all pages.
+
+### What you got
+The pages had inconsistent styling, layouts, and Bootstrap components in different sections of the application.
+
+### What you corrected
+Standardized the overall interface, refined the existing styling according to the provided design, and applied consistent Bootstrap-based styling across the different pages and components.
                                                 =======================================================
 
