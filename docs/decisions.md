@@ -39,6 +39,45 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 - **Why:** To give a personal touch because different users will be using the system, so it should change according to the current logged-in user.
                                               ---------------------------------------------------------
 
+
+## Decision 6
+
+- **Chose:** To add two more Account Managers and one Billing Admin along with some data because it looks empty. Create at least five new subscriptions, and each subscription should have at least two to three invoices, because we need to check the working of the site till now.
+- **Rejected:** To continue testing with only the existing managers, subscriptions, and invoices.
+- **Why:** because we need enough data to check the working of the site till now and adding multiple managers gave it a bit of realistic effect.
+                                              ---------------------------------------------------------
+
+
+## Decision 7**
+
+**Chose:**
+  Added Account Manager invoice visibility when they are either the **Owner or Collaborator**.
+**Rejected:**
+  Giving Account Managers invoice visibility without checking whether they are the **Owner or Collaborator**.
+**Why:**
+  Account Managers should only see the invoices related to their own subscription access.
+                                              ---------------------------------------------------------
+
+## Decision 8**
+
+**Chose:**
+  Removed the unnecessary **Collaborator field from the Invoice form**, since it is managed through subscriptions.
+**Rejected:**
+  Keeping a separate **Collaborator field in the Invoice form**.
+**Why:**
+  Collaborators are already managed through subscriptions, so adding the same field in invoices was unnecessary.
+                                              ---------------------------------------------------------
+
+## Decision 9**
+
+**Chose:**
+  I found the AI structure and model fault about the **collaboration part, owner part, archival part, and a few of the designing**. I pointed it out and asked AI to fix just according to my needs.
+**Rejected:**
+  Trusting AI blindly and accepting the structure, model, and design without rechecking.
+**Why:**
+  I kept on rechecking the work and correcting the AI whenever something did not match my actual needs.
+
+
 ## Decision 6
 
 - **Chose:** To add two more Account Managers and one Billing Admin along with some data because it looks empty. Create at least five new subscriptions, and each subscription should have at least two to three invoices, because we need to check the working of the site till now.
