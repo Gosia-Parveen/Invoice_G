@@ -40,6 +40,13 @@ I have divided the 10 task according to the days given, so i plan on completing 
     Added features on the Admin Dashboard as required: Invoices issued, Revenue collected,
     Receivables ....Overdue Invoice Alerts + a Dismiss option for Billing Admin,
     -----pushed into github-----
+ 
+**## Day_5: Task 8 & 10 {completed}**
+    Built + Connected Account Manager Dashboard with  Added features like:
+    Invoices issued, Revenue collected, Applied Owned + Collaborated Subscription and Invoice Filtering,
+    Added Overdue Invoice Alerts,with Restricted Alert Dismissal for Account Managers,
+    -----pushed into github-----
+
 
 
                                                         -------------------------------------------------------
