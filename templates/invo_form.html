@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
@@ -17,276 +16,464 @@
     <style>
         body {
             margin: 0;
-            min-height: 110vh;
-            width: 100%;
+            min-height: 100vh;
             background: linear-gradient(to left, #faec87, #fcba95);
-            padding-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: Arial, sans-serif;
         }
 
-        .container1 {
-
-            width: 530px;
-            min-height: 350px;
-            max-height: 90vh;
-            overflow-y: auto;
-
-            background-color: #fa7301;
-            padding: 28px 20px;
-
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 14px;
-
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background: #b50001;
             color: white;
+            padding: 25px 15px;
+            z-index: 1000;
         }
 
-        .btn1 {
-
-            height: 50px;
-            width: 200px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            background-color: #f3b900;
-            color: black;
-
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 5px;
         }
 
-        .btn1:hover {
+        .sidebar .role {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
 
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-weight: bold;
+            color: #b50001;
+        }
+
+        /* FORM CARD */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 6px;
+        }
+
+        /* BUTTONS */
+        .btn-submit {
             background-color: #b50001;
+            border-color: #b50001;
             color: white;
+        }
 
+        .btn-submit:hover {
+            background-color: #8f0001;
+            border-color: #8f0001;
+            color: white;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #565e64;
+            border-color: #565e64;
+            color: white;
+        }
+
+        /* DISABLED COLLABORATOR FIELD */
+        .collaborator-disabled {
+            background-color: #e9ecef !important;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
         }
     </style>
-
-
 </head>
 
 <body>
 
-    <div class="container1">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
-        <form method="POST">
+        <h3>Invoice_G</h3>
 
-            {% csrf_token %}
+        <div class="role">
 
-            <!-- TITLE -->
-            <h2 style="text-align:center;">
+            {% if user.is_superuser %}
+                Billing Admin
+            {% else %}
+                Account Manager ({{ user.first_name }})
+            {% endif %}
 
-                {% if invoice %}
-                    Edit Invoice
-                {% else %}
-                    New Invoice
-                {% endif %}
+        </div>
 
-            </h2>
+        {% if user.is_superuser %}
+
+            <a href="{% url 'admin_dash' %}">
+                Dashboard
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'acc_man' %}">
+                Dashboard
+            </a>
+
+        {% endif %}
+
+        <a href="{% url 'subs_tab' %}">
+            Subscriptions
+        </a>
+
+        <a href="{% url 'invoice_list' %}">
+            Invoices
+        </a>
+
+        <div class="logout">
+
+            <a href="{% url 'logout' %}">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="main-content">
 
 
-            <!-- INVOICE NUMBER -->
-            <label class="form-label">
-                Invoice No.
-            </label>
-
-            <input type="text"
-                   class="form-control"
-                   value="{{ invoice.invoice_number|default:'Automatically Generated' }}"
-                   readonly>
+        <div class="form-container">
 
 
-            <!-- SUBSCRIPTION -->
-            <label for="subscription" class="form-label">
-                Subscription
-            </label>
+            <form method="POST">
 
-            <select class="form-control"
+                {% csrf_token %}
+
+
+                <!-- TITLE -->
+
+                <h2>
+
+                    {% if invoice %}
+                        Edit Invoice
+                    {% else %}
+                        New Invoice
+                    {% endif %}
+
+                </h2>
+
+
+                <!-- INVOICE NUMBER -->
+
+                <label class="form-label">
+                    Invoice No.
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value="{{ invoice.invoice_number|default:'Automatically Generated' }}"
+                    readonly
+                >
+
+
+                <!-- SUBSCRIPTION -->
+
+                <label for="subscription" class="form-label">
+                    Subscription
+                </label>
+
+                <select
+                    class="form-control"
                     id="subscription"
                     name="subscription"
                     {% if invoice and invoice.status != "Draft" %}disabled{% endif %}
-                    required>
+                    required
+                >
 
-                <option value="">
-                    Select Subscription
-                </option>
-
-                {% for subscription in subscriptions %}
-
-                    <option value="{{ subscription.id }}"
-                            data-customer="{{ subscription.customer_name }}"
-                            data-email="{{ subscription.billing_email }}"
-                            {% if invoice.subscription_id == subscription.id %}selected{% endif %}>
-
-                        {{ subscription.plan }} - {{ subscription.customer_name }}
-
+                    <option value="">
+                        Select Subscription
                     </option>
 
-                {% endfor %}
+                    {% for subscription in subscriptions %}
 
-            </select>
+                        <option
+                            value="{{ subscription.id }}"
+                            data-customer="{{ subscription.customer_name }}"
+                            data-email="{{ subscription.billing_email }}"
+                            {% if invoice.subscription_id == subscription.id %}
+                                selected
+                            {% endif %}
+                        >
 
+                            {{ subscription.plan }} - {{ subscription.customer_name }}
 
-            <!-- CUSTOMER NAME -->
-            <label for="customername" class="form-label">
-                Customer Name
-            </label>
+                        </option>
 
-            <input type="text"
-                   class="form-control"
-                   id="customername"
-                   value="{{ invoice.subscription.customer_name|default:'' }}"
-                   readonly>
+                    {% endfor %}
 
-
-            <!-- BILLING EMAIL -->
-            <label for="billingemail" class="form-label">
-                Billing Email
-            </label>
-
-            <input type="email"
-                   class="form-control"
-                   id="billingemail"
-                   value="{{ invoice.subscription.billing_email|default:'' }}"
-                   readonly>
+                </select>
 
 
-            <!-- BILLING PERIOD START -->
-            <label for="billingperiodstart" class="form-label">
-                Billing Period Start
-            </label>
+                <!-- CUSTOMER NAME -->
 
-            <input type="date"
-                   class="form-control"
-                   id="billingperiodstart"
-                   name="billing_period_start"
-                   value="{{ invoice.billing_period_start|date:'Y-m-d' }}"
-                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
-                   required>
+                <label for="customername" class="form-label">
+                    Customer Name
+                </label>
 
-
-            <!-- BILLING PERIOD END -->
-            <label for="billingperiodend" class="form-label">
-                Billing Period End
-            </label>
-
-            <input type="date"
-                   class="form-control"
-                   id="billingperiodend"
-                   name="billing_period_end"
-                   value="{{ invoice.billing_period_end|date:'Y-m-d' }}"
-                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
-                   required>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="customername"
+                    value="{{ invoice.subscription.customer_name|default:'' }}"
+                    readonly
+                >
 
 
-            <!-- AMOUNT -->
-            <label for="amount" class="form-label">
-                Amount
-            </label>
+                <!-- BILLING EMAIL -->
 
-            <input type="number"
-                   class="form-control"
-                   id="amount"
-                   name="amount"
-                   placeholder="Amount"
-                   value="{{ invoice.amount|default:'' }}"
-                   step="0.01"
-                   min="0"
-                   {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
-                   required>
+                <label for="billingemail" class="form-label">
+                    Billing Email
+                </label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    id="billingemail"
+                    value="{{ invoice.subscription.billing_email|default:'' }}"
+                    readonly
+                >
 
 
-            <!-- DUE DATE -->
-            <label for="duedate" class="form-label">
-                Due Date
-            </label>
+                <!-- BILLING PERIOD START -->
 
-            <input type="date"
-                   class="form-control"
-                   id="duedate"
-                   name="due_date"
-                   value="{{ invoice.due_date|date:'Y-m-d' }}"
-                   required>
+                <label for="billingperiodstart" class="form-label">
+                    Billing Period Start
+                </label>
 
-
-            <!-- STATUS -->
-            <label for="status" class="form-label">
-                Status
-            </label>
-
-            <input type="text"
-                   class="form-control"
-                   id="status"
-                   value="{{ invoice.status|default:'Draft' }}"
-                   readonly>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="billingperiodstart"
+                    name="billing_period_start"
+                    value="{{ invoice.billing_period_start|date:'Y-m-d' }}"
+                    {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                    required
+                >
 
 
-            <!-- CREDIT NOTE -->
-            <label for="creditnote" class="form-label">
-                Credit Note
-            </label>
+                <!-- BILLING PERIOD END -->
 
-            <input type="text"
-                   class="form-control"
-                   id="creditnote"
-                   value="{% if invoice.credit_note %}{{ invoice.credit_note.amount }}{% else %}No Credit Note{% endif %}"
-                   readonly>
+                <label for="billingperiodend" class="form-label">
+                    Billing Period End
+                </label>
 
-
-            <!-- OWNER -->
-            <label for="owner" class="form-label">
-                Owner
-            </label>
-
-            <input type="text"
-                   class="form-control"
-                   id="owner"
-                   value="{{ invoice.subscription.owner.username|default:'' }}"
-                   readonly>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="billingperiodend"
+                    name="billing_period_end"
+                    value="{{ invoice.billing_period_end|date:'Y-m-d' }}"
+                    {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                    required
+                >
 
 
-            <!-- BUTTONS -->
-            <div class="d-flex justify-content-center gap-3 mt-3">
+                <!-- AMOUNT -->
 
-                <button class="btn btn-danger btn1"
-                        type="submit">
-                    Submit
-                </button>
+                <label for="amount" class="form-label">
+                    Amount
+                </label>
 
-                <a class="btn btn-danger btn1"
-                   href="{% url 'invoice_list' %}">
-                    Go Back
-                </a>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="amount"
+                    name="amount"
+                    placeholder="Amount"
+                    value="{{ invoice.amount|default:'' }}"
+                    step="0.01"
+                    min="0"
+                    {% if invoice and invoice.status != "Draft" %}readonly{% endif %}
+                    required
+                >
 
-            </div>
 
-        </form>
+                <!-- DUE DATE -->
+
+                <label for="duedate" class="form-label">
+                    Due Date
+                </label>
+
+                <input
+                    type="date"
+                    class="form-control"
+                    id="duedate"
+                    name="due_date"
+                    value="{{ invoice.due_date|date:'Y-m-d' }}"
+                    required
+                >
+
+
+                <!-- STATUS -->
+
+                <label for="status" class="form-label">
+                    Status
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="status"
+                    value="{{ invoice.status|default:'Draft' }}"
+                    readonly
+                >
+
+
+                <!-- CREDIT NOTE -->
+
+                <label for="creditnote" class="form-label">
+                    Credit Note
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="creditnote"
+                    value="{% if invoice.credit_note %}{{ invoice.credit_note.amount }}{% else %}No Credit Note{% endif %}"
+                    readonly
+                >
+
+
+                <!-- OWNER -->
+
+                <label for="owner" class="form-label">
+                    Owner
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="owner"
+                    value="{{ invoice.subscription.owner.username|default:'' }}"
+                    readonly
+                >
+
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+
+                    <button
+                        class="btn btn-danger btn1"
+                        type="submit"
+                    >
+                        {% if invoice %}
+                            Save Changes
+                        {% else %}
+                            Create Invoice
+                        {% endif %}
+                    </button>
+
+
+                    <a
+                        class="btn btn-danger btn1"
+                        href="{% url 'invoice_list' %}"
+                    >
+                        Go Back
+                    </a>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
 
     </div>
 
 
+    <!-- ================= JAVASCRIPT ================= -->
+
     <script>
-        const subscriptionSelect = document.getElementById("subscription");
-        const customerName = document.getElementById("customername");
-        const billingEmail = document.getElementById("billingemail");
+
+        const subscriptionSelect =
+            document.getElementById("subscription");
+
+        const customerName =
+            document.getElementById("customername");
+
+        const billingEmail =
+            document.getElementById("billingemail");
+
 
         subscriptionSelect.addEventListener("change", function () {
 
             const selectedOption =
                 this.options[this.selectedIndex];
 
+
             customerName.value =
                 selectedOption.dataset.customer || "";
+
 
             billingEmail.value =
                 selectedOption.dataset.email || "";
 
         });
+
     </script>
+
 
 </body>
 
