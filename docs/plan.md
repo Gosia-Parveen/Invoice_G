@@ -7,7 +7,7 @@ Answer each of these, in your own words.
 I have divided the 10 task according to the days given, so i plan on completing 2 tasks daily which means in 5 days all 10 tasks will be completed. I will have 2 days to host and test the site.
                                                         -------------------------------------------------------
 - What order did you build in, and why that order?
-## Day_1: Task 1{completed}
+**## Day_1: Task 1{completed}**
     Setup Django framework,
     Create Billing admin and Account Manager
     Built Login page
@@ -36,6 +36,9 @@ I have divided the 10 task according to the days given, so i plan on completing 
     Restricted Credit Note Creation through Template + Backend Protection,
     Corrected Sidebar Dashboard Routing for Billing Admin + Account Managers,
     Added collaborators ManyToMany Field to Subscription,
+    -----pushed into github-----
+    Added features on the Admin Dashboard as required: Invoices issued, Revenue collected,
+    Receivables ....Overdue Invoice Alerts + a Dismiss option for Billing Admin,
     -----pushed into github-----
 
 
