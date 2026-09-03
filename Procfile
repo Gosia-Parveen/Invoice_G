@@ -1,0 +1,1 @@
+web: gunicorn invocie_g.wsgi
