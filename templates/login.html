@@ -22,7 +22,7 @@
             margin: 0;
             min-height: 100vh;
             width: 100%;
-            
+            background: linear-gradient(to left, #ff9408, #95122c);
 
             display: flex;
             justify-content: center;
@@ -33,12 +33,13 @@
         .login {
             width: 330px;
             min-height: 350px;
-            background-color: #b84b15;
+            background-color: #a70c0c;
             padding: 28px 20px;
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: 14px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             color: white;
+            
         }
 
         /* Heading */
@@ -49,7 +50,13 @@
             color: white;
             text-align: center;
         }
-
+        .login h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+            text-align: left;
+        }
         /* Input boxes */
         .input-box {
             position: relative;
@@ -75,17 +82,16 @@
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.5);
 
-            background: linear-gradient(to right, #ec84d2, #c7077a);
-            color: white;
+            background: linear-gradient(to right, #eeaa11, #e7e4de);
+            color: black;
 
             font-weight: 600;
             font-size: 20px;
-
             margin: 0;
         }
 
         .login .btn:hover {
-            background: linear-gradient(to right, #e26dcb, #700647);
+            background: linear-gradient(to right, #ee1166, #f095cf);
         }
 
     </style>
@@ -99,23 +105,27 @@
         <h1>Login</h1>
         <p> Welcome back, please login to your account</p>
 
-
+        <form method="post">
+            {% csrf_token %}
         <!-- Username -->
         <div class="input-box">
-            <input type="text" placeholder="User Name">
+            <h4>Email</h4>
+            <input type="email" name="email" placeholder="User Email">
         </div>
 
 
         <!-- Password -->
         <div class="input-box">
-            <input type="password" placeholder="Password">
+            <h4>Password</h4>
+            <input type="password" name="password" placeholder="Password">
         </div>
-
+        <br>
+        <br>
         <!-- Login button -->
         <button type="submit" class="btn">
             Login
         </button>
-
+        </form>
 
 
     </div>
