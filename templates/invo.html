@@ -1,481 +1,576 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices</title>
 
-<title>Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to left, #faec87, #fcba95);
+            font-family: Arial, sans-serif;
+        }
 
-<style>
-    body {
-        background: linear-gradient(to left, #faec87, #fcba95);
-        padding-top: 50px;
-        margin: 0;
-    }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background: #b50001;
+            color: white;
+            padding: 25px 15px;
+        }
 
-    .btn1 {
-        color: white;
-        width: 80px;
-        padding-bottom: 5px;
-        background: linear-gradient(to left, #ff9408, #95122c);
-    }
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
 
-    .btn1:hover {
-        background: linear-gradient(to left, #f3f4f5, #ff9408);
-    }
+        .sidebar .role {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
 
-    .btn2 {
-        color: white;
-        width: 60px;
-        padding-bottom: 5px;
-        background: linear-gradient(to left, #c4e81d, #8ab62e);
-    }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
 
-    .btn2:hover {
-        background-color: #597001;
-    }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.15);
+        }
 
-    #sidebar {
-        position: fixed;
-        top: 60px;
-        left: 0;
-        width: 250px;
-        height: calc(100% - 60px);
-        background-color: #b50001;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 1040;
-        overflow-y: auto;
-    }
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
 
-    #sidebar.show {
-        transform: translateX(0);
-    }
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
 
-    .content-wrapper {
-        transition: margin-left 0.3s ease-in-out;
-    }
+        .page-title {
+            font-weight: bold;
+            color: #b50001;
+        }
 
-    .content-wrapper.shifted {
-        margin-left: 200px;
-    }
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
 
-    .table-container {
-        overflow-x: auto;
-    }
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
 
-    .action-form {
-        margin-bottom: 4px;
-    }
-</style>
+        table {
+            vertical-align: middle;
+        }
 
+        th {
+            white-space: nowrap;
+        }
+
+        td {
+            white-space: nowrap;
+        }
+
+        .disabled-action {
+            pointer-events: none;
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar fixed-top text-white">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-            <div class="d-flex align-items-center">
+    <h3>Invoice_G</h3>
 
-                <button class="navbar-toggler" type="button" id="toggleSidebar" aria-label="Toggle navigation"
-                    style="background-color: #ef8d58;">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <h3 style="color: #b50001; font-size: 30px; font-family: 'Times New Roman', Times, serif; padding-left: 1200px;">
-          Invoice_G </h3>
-
-            </div>
-        </div>
-    </nav>
-
-    
-    <!-- Sidebar -->
-    <div id="sidebar" class="text-white">
-
-        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-
-            <h5 class="mb-0">
-    {% if user.is_superuser %}
-        Billing Admin
-    {% else %}
-        Account Manager ({{ user.first_name }})
-    {% endif %}
-</h5>
-
-            <button type="button" class="btn-close btn-close-white" id="closeSidebar">
-            </button>
-
-        </div>
-
-        <ul class="navbar-nav flex-column px-3">
-
-    <li class="nav-item">
+    <div class="role">
         {% if user.is_superuser %}
-            <a class="nav-link" href="{% url 'admin_dash' %}">
-                Dashboard
-            </a>
+            Billing Admin
         {% else %}
-            <a class="nav-link" href="{% url 'acc_man' %}">
-                Dashboard
-            </a>
+            Account Manager ({{ user.first_name }})
         {% endif %}
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'subs_tab' %}">
-            Subscription
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'invoice_list' %}">
-            Invoice
-        </a>
-    </li>
-
-</ul>
-
     </div>
-    <!-- Main Content -->
-    <main class="container-fluid content-wrapper">
 
-        <div class="container" style="padding-top:10px;">
+    {% if user.is_superuser %}
+        <a href="{% url 'admin_dash' %}">Dashboard</a>
+    {% else %}
+        <a href="{% url 'acc_man' %}">Dashboard</a>
+    {% endif %}
 
-            <!-- Header -->
-            <div class="card p-4">
+    <a href="{% url 'subs_tab' %}">Subscriptions</a>
+    <a href="{% url 'invoice_list' %}">Invoices</a>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="logout">
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
 
-                    <h3 class="mb-0">
-                        Invoice
-                    </h3>
+</div>
 
-                    <a class="btn btn-danger" href="{% url 'add_invoice' %}">
-                        + Add New Invoice
-                    </a>
 
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title">Invoices</h2>
+
+        <a href="{% url 'add_invoice' %}" class="btn btn-danger">
+            + Add New Invoice
+        </a>
+    </div>
+
+
+    <!-- SEARCH / FILTERS -->
+    <div class="card shadow-sm p-3 mb-4">
+
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label">Customer / Email</label>
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search..."
+                        value="{{ request.GET.search|default:'' }}"
+                    >
                 </div>
 
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All</option>
+                        <option value="Draft" {% if request.GET.status == 'Draft' %}selected{% endif %}>Draft</option>
+                        <option value="Issued" {% if request.GET.status == 'Issued' %}selected{% endif %}>Issued</option>
+                        <option value="Paid" {% if request.GET.status == 'Paid' %}selected{% endif %}>Paid</option>
+                        <option value="Void" {% if request.GET.status == 'Void' %}selected{% endif %}>Void</option>
+                    </select>
+                </div>
 
-                <!-- Search / Filters -->
-                <form method="GET" class="row g-2">
+                <div class="col-md-2">
+                    <label class="form-label">Overdue</label>
+                    <select name="overdue" class="form-select">
+                        <option value="">All</option>
+                        <option value="yes" {% if request.GET.overdue == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request.GET.overdue == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
 
-                    <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" placeholder="Search customer or email"
-                            value="{{ request.GET.search }}">
-                    </div>
+                {% if user.is_superuser %}
+                <div class="col-md-2">
+                    <label class="form-label">Owner</label>
+                    <select name="owner" class="form-select">
+                        <option value="">All</option>
 
-
-                    <div class="col-md-2">
-
-                        <select name="status" class="form-control">
-
-                            <option value="">All Status</option>
-
-                            <option value="Draft" {% if request.GET.status == "Draft" %}selected{% endif %}>
-                                Draft
+                        {% for manager in account_managers %}
+                            <option
+                                value="{{ manager.id }}"
+                                {% if request.GET.owner == manager.id|stringformat:"s" %}selected{% endif %}
+                            >
+                                {{ manager.username }}
                             </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
 
-                            <option value="Issued" {% if request.GET.status == "Issued" %}selected{% endif %}>
-                                Issued
-                            </option>
+                <div class="col-md-2">
+                    <label class="form-label">Sort By</label>
+                    <select name="sort" class="form-select">
+                        <option value="">Default</option>
+                        <option value="due_date" {% if request.GET.sort == 'due_date' %}selected{% endif %}>
+                            Due Date
+                        </option>
+                        <option value="amount" {% if request.GET.sort == 'amount' %}selected{% endif %}>
+                            Amount
+                        </option>
+                        <option value="status" {% if request.GET.sort == 'status' %}selected{% endif %}>
+                            Status
+                        </option>
+                    </select>
+                </div>
 
-                            <option value="Paid" {% if request.GET.status == "Paid" %}selected{% endif %}>
-                                Paid
-                            </option>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-danger w-100">
+                        Go
+                    </button>
+                </div>
 
-                            <option value="Void" {% if request.GET.status == "Void" %}selected{% endif %}>
-                                Void
-                            </option>
+            </div>
 
-                        </select>
+        </form>
 
-                    </div>
-
-
-                    <div class="col-md-2">
-
-                        <select name="overdue" class="form-control">
-
-                            <option value="">Overdue</option>
-
-                            <option value="yes" {% if request.GET.overdue == "yes" %}selected{% endif %}>
-                                Yes
-                            </option>
-
-                            <option value="no" {% if request.GET.overdue == "no" %}selected{% endif %}>
-                                No
-                            </option>
-
-                        </select>
-
-                    </div>
+    </div>
 
 
-                    <div class="col-md-2">
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-                        <select name="owner" class="form-control">
 
-                            <option value="">All Owners</option>
+    <!-- INVOICE TABLE -->
+    <div class="table-container">
 
-                            {% for user in account_managers %}
+        <div class="table-responsive">
 
-                            <option value="{{ user.id }}" {% if request.GET.owner == user.id|stringformat:"s" %} selected
-                                {% endif %}>
-                                {{ user.username }}
-                            </option>
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Invoice No.</th>
+                        <th>Customer Name</th>
+                        <th>Billing Email</th>
+                        <th>Subscription</th>
+                        <th>Billing Period</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Credit Note</th>
+                        <th>Owner</th>
+                        <th>Collaborator</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for invoice in invoices %}
+
+                    <tr>
+
+                        <!-- INVOICE NUMBER -->
+                        <td>
+                            {{ invoice.invoice_number }}
+                        </td>
+
+
+                        <!-- CUSTOMER -->
+                        <td>
+                            {{ invoice.subscription.customer_name }}
+                        </td>
+
+
+                        <!-- BILLING EMAIL -->
+                        <td>
+                            {{ invoice.subscription.billing_email }}
+                        </td>
+
+
+                        <!-- SUBSCRIPTION -->
+                        <td>
+                            {{ invoice.subscription }}
+                        </td>
+
+
+                        <!-- BILLING PERIOD -->
+                        <td>
+                            {{ invoice.billing_period_start }}
+                            -
+                            {{ invoice.billing_period_end }}
+                        </td>
+
+
+                        <!-- AMOUNT -->
+                        <td>
+                            ₹{{ invoice.amount }}
+                        </td>
+
+
+                        <!-- DUE DATE -->
+                        <td>
+                            {{ invoice.due_date }}
+                        </td>
+
+
+                        <!-- STATUS -->
+                        <td>
+
+                            {% if invoice.status == 'Draft' %}
+                                <span class="badge bg-secondary">
+                                    Draft
+                                </span>
+
+                            {% elif invoice.status == 'Issued' %}
+                                <span class="badge bg-warning text-dark">
+                                    Issued
+                                </span>
+
+                            {% elif invoice.status == 'Paid' %}
+                                <span class="badge bg-success">
+                                    Paid
+                                </span>
+
+                            {% elif invoice.status == 'Void' %}
+                                <span class="badge bg-danger">
+                                    Void
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CREDIT NOTE -->
+                        <td>
+
+                            {% if invoice.status == 'Paid' %}
+
+                                {% if invoice.credit_note %}
+
+                                    <span class="badge bg-info text-dark">
+                                        Created
+                                    </span>
+
+                                {% elif user.is_superuser %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#creditNoteModal{{ invoice.id }}">
+                                        Credit Note
+                                    </button>
+
+                                {% else %}
+
+                                    <span class="text-muted">—</span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span class="text-muted">—</span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- OWNER -->
+                        <td>
+                            {{ invoice.subscription.owner.username }}
+                        </td>
+
+
+                        <!-- COLLABORATOR -->
+                        <td>
+
+                            {% for collaborator in invoice.subscription.collaborators.all %}
+
+                                {{ collaborator.username }}
+
+                                {% if not forloop.last %}
+                                    ,
+                                {% endif %}
+
+                            {% empty %}
+
+                                <span class="text-muted">—</span>
 
                             {% endfor %}
 
-                        </select>
-
-                    </div>
+                        </td>
 
 
-                    <div class="col-md-2">
+                        <!-- ACTION -->
+                        <td>
 
-                        <select name="sort" class="form-control">
+                            {% if invoice.status == 'Draft' %}
 
-                            <option value="">Sort By</option>
-                            <option value="due_date">Due Date</option>
-                            <option value="amount">Amount</option>
-                            <option value="status">Status</option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="col-md-1">
-
-                        <button type="submit" class="btn btn-danger w-100">
-                            Search
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-
-            <!-- Messages -->
-            {% if messages %}
-
-            {% for message in messages %}
-
-            <div class="alert alert-{{ message.tags }} mt-3">
-                {{ message }}
-            </div>
-
-            {% endfor %}
-
-            {% endif %}
-
-
-            <!-- Table -->
-            <div class="table-container mt-3">
-
-                <table class="table table-hover">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Invoice No.</th>
-                            <th>Customer Name</th>
-                            <th>Billing Email</th>
-                            <th>Subscription</th>
-                            <th>Billing Period</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Credit Note</th>
-                            <th>Owner</th>
-                            <th>Action</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for invoice in invoices %}
-
-                        <tr>
-
-                            <th scope="row">
-                                {{ invoice.invoice_number }}
-                            </th>
-
-                            <td>
-                                {{ invoice.subscription.customer_name }}
-                            </td>
-
-                            <td>
-                                {{ invoice.subscription.billing_email }}
-                            </td>
-
-                            <td>
-                                {{ invoice.subscription.plan }}
-                            </td>
-
-                            <td>
-                                {{ invoice.billing_period_start }}
-                                -
-                                {{ invoice.billing_period_end }}
-                            </td>
-
-                            <td>
-                                {{ invoice.amount }}
-                            </td>
-
-                            <td>
-                                {{ invoice.due_date }}
-
-                                {% if invoice.status == "Issued" and invoice.due_date < today %} <br>
-                                    <small class="text-danger">
-                                        Overdue
-                                    </small>
-                                    {% endif %}
-
-                            </td>
-
-                            <td>
-                                {{ invoice.status }}
-                            </td>
-
-
-                            <!-- CREDIT NOTE -->
-                            <td>
-
-                                {% if invoice.credit_note %}
-
-                                {{ invoice.credit_note.amount }}
-
-                                {% else %}
-
-                                —
-
-                                {% endif %}
-
-                            </td>
-
-
-                            <!-- OWNER -->
-                            <td>
-                                {{ invoice.subscription.owner.username }}
-                            </td>
-
-
-                            <!-- ACTIONS -->
-                            <td>
-
-                                {% if invoice.status == "Draft" %}
-
-                                <a class="btn btn-sm btn2 mb-1" href="{% url 'edit_invoice' invoice.id %}">
+                                <!-- EDIT -->
+                                <a
+                                    href="{% url 'edit_invoice' invoice.id %}"
+                                    class="btn btn-sm btn-outline-primary">
                                     Edit
                                 </a>
 
 
-                                <form method="POST" action="{% url 'issue_invoice' invoice.id %}" class="action-form">
+                                <!-- ISSUE -->
+                                {% if user.is_superuser %}
 
-                                    {% csrf_token %}
+                                    <form
+                                        method="POST"
+                                        action="{% url 'issue_invoice' invoice.id %}"
+                                        class="d-inline">
 
-                                    <button type="submit" class="btn btn-sm btn1">
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-success">
+                                            Issue
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary disabled-action"
+                                        disabled>
                                         Issue
                                     </button>
 
-                                </form>
+                                {% endif %}
 
 
                                 <!-- VOID -->
-                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
-                                    data-bs-target="#voidModal{{ invoice.id }}">
-                                    Void
-                                </button>
+                                {% if user.is_superuser %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#voidModal{{ invoice.id }}">
+                                        Void
+                                    </button>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary disabled-action"
+                                        disabled>
+                                        Void
+                                    </button>
+
+                                {% endif %}
 
 
-                                {% elif invoice.status == "Issued" %}
+                            {% elif invoice.status == 'Issued' %}
+
+                                <!-- ACCOUNT MANAGER CANNOT EDIT ISSUED -->
+                                {% if user.is_superuser %}
+
+                                    <a
+                                        href="{% url 'edit_invoice' invoice.id %}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        Edit
+                                    </a>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary disabled-action"
+                                        disabled>
+                                        Edit
+                                    </button>
+
+                                {% endif %}
 
 
-                                <a class="btn btn-sm btn2 mb-1" href="{% url 'edit_invoice' invoice.id %}">
-                                    Edit
-                                </a>
+                                <!-- MARK PAID -->
+                                {% if user.is_superuser %}
 
+                                    <form
+                                        method="POST"
+                                        action="{% url 'mark_invoice_paid' invoice.id %}"
+                                        class="d-inline">
 
-                                <form method="POST" action="{% url 'mark_invoice_paid' invoice.id %}"
-                                    class="action-form">
+                                        {% csrf_token %}
 
-                                    {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-success">
+                                            Mark Paid
+                                        </button>
 
-                                    <button type="submit" class="btn btn-sm btn1">
+                                    </form>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary disabled-action"
+                                        disabled>
                                         Mark Paid
                                     </button>
 
-                                </form>
+                                {% endif %}
 
 
                                 <!-- VOID -->
-                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
-                                    data-bs-target="#voidModal{{ invoice.id }}">
-                                    Void
-                                </button>
+                                {% if user.is_superuser %}
 
-                                {% elif invoice.status == "Paid" %}
-
-                                {% if invoice.credit_note %}
-
-                                <span class="text-success">
-                                    Credit Note Added
-                                </span>
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#voidModal{{ invoice.id }}">
+                                        Void
+                                    </button>
 
                                 {% else %}
 
-                                {% if not is_account_manager %}
-
-                                <button type="button" class="btn btn-sm btn1" data-bs-toggle="modal"
-                                    data-bs-target="#creditModal{{ invoice.id }}">
-                                    Credit Note
-                                </button>
-
-                                {% else %}
-
-                                <span>
-                                    —
-                                </span>
-
-                                {% endif %}
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary disabled-action"
+                                        disabled>
+                                        Void
+                                    </button>
 
                                 {% endif %}
 
 
-                                {% elif invoice.status == "Void" %}
+                            {% elif invoice.status == 'Paid' %}
 
-                                <span>
-                                    —
-                                </span>
-
-                                {% endif %}
-
-                            </td>
-
-                        </tr>
+                                <span class="text-muted">—</span>
 
 
-                        <!-- VOID MODAL -->
-                        {% if invoice.status == "Draft" or invoice.status == "Issued" %}
+                            {% elif invoice.status == 'Void' %}
 
-                        <div class="modal fade" id="voidModal{{ invoice.id }}" tabindex="-1">
+                                <span class="text-muted">—</span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- VOID MODAL -->
+                    {% if invoice.status == 'Draft' or invoice.status == 'Issued' %}
+
+                        <div
+                            class="modal fade"
+                            id="voidModal{{ invoice.id }}"
+                            tabindex="-1">
 
                             <div class="modal-dialog">
 
@@ -484,38 +579,57 @@
                                     <div class="modal-header">
 
                                         <h5 class="modal-title">
-                                            Void {{ invoice.invoice_number }}
+                                            Void Invoice
                                         </h5>
 
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                        <button
+                                            type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal">
                                         </button>
 
                                     </div>
 
-
-                                    <form method="POST" action="{% url 'void_invoice' invoice.id %}">
+                                    <form
+                                        method="POST"
+                                        action="{% url 'void_invoice' invoice.id %}">
 
                                         {% csrf_token %}
 
                                         <div class="modal-body">
 
+                                            <p>
+                                                Are you sure you want to void
+                                                invoice
+                                                <strong>
+                                                    {{ invoice.invoice_number }}
+                                                </strong>?
+                                            </p>
+
                                             <label class="form-label">
-                                                Reason for voiding
+                                                Reason
                                             </label>
 
-                                            <textarea name="void_reason" class="form-control" rows="4"
+                                            <textarea
+                                                name="reason"
+                                                class="form-control"
+                                                rows="3"
                                                 required></textarea>
 
                                         </div>
 
-
                                         <div class="modal-footer">
 
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                data-bs-dismiss="modal">
                                                 Cancel
                                             </button>
 
-                                            <button type="submit" class="btn btn-danger">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger">
                                                 Void Invoice
                                             </button>
 
@@ -529,13 +643,16 @@
 
                         </div>
 
-                        {% endif %}
+                    {% endif %}
 
 
-                        <!-- CREDIT NOTE MODAL -->
-                        {% if invoice.status == "Paid" and not invoice.credit_note and user.is_superuser %}
+                    <!-- CREDIT NOTE MODAL -->
+                    {% if invoice.status == 'Paid' and not invoice.credit_note and user.is_superuser %}
 
-                        <div class="modal fade" id="creditModal{{ invoice.id }}" tabindex="-1">
+                        <div
+                            class="modal fade"
+                            id="creditNoteModal{{ invoice.id }}"
+                            tabindex="-1">
 
                             <div class="modal-dialog">
 
@@ -544,46 +661,57 @@
                                     <div class="modal-header">
 
                                         <h5 class="modal-title">
-                                            Credit Note -
-                                            {{ invoice.invoice_number }}
+                                            Create Credit Note
                                         </h5>
 
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                        <button
+                                            type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal">
                                         </button>
 
                                     </div>
 
-
-                                    <form method="POST" action="{% url 'create_credit_note' invoice.id %}">
+                                    <form
+                                        method="POST"
+                                        action="{% url 'create_credit_note' invoice.id %}">
 
                                         {% csrf_token %}
 
                                         <div class="modal-body">
 
+                                            <p>
+                                                Create a credit note for
+                                                invoice
+                                                <strong>
+                                                    {{ invoice.invoice_number }}
+                                                </strong>?
+                                            </p>
+
                                             <label class="form-label">
-                                                Credit Note Amount
-                                            </label>
-
-                                            <input type="number" name="amount" class="form-control" step="0.01"
-                                                min="0.01" max="{{ invoice.amount }}" required>
-
-
-                                            <label class="form-label mt-3">
                                                 Reason
                                             </label>
 
-                                            <textarea name="reason" class="form-control" rows="4" required></textarea>
+                                            <textarea
+                                                name="reason"
+                                                class="form-control"
+                                                rows="3"
+                                                required></textarea>
 
                                         </div>
 
-
                                         <div class="modal-footer">
 
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                data-bs-dismiss="modal">
                                                 Cancel
                                             </button>
 
-                                            <button type="submit" class="btn btn-danger">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary">
                                                 Create Credit Note
                                             </button>
 
@@ -597,69 +725,93 @@
 
                         </div>
 
-                        {% endif %}
+                    {% endif %}
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="12" class="text-center text-muted py-4">
+                            No invoices found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
 
-                        {% empty %}
+        <!-- PAGINATION -->
+        {% if invoices.has_other_pages %}
 
-                        <tr>
-
-                            <td colspan="11" class="text-center">
-                                No invoices found.
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-
-            <!-- Pagination -->
-            {% if invoices.has_other_pages %}
-
-            <nav>
+            <nav aria-label="Invoice pagination">
 
                 <ul class="pagination justify-content-center">
 
                     {% if invoices.has_previous %}
 
-                    <li class="page-item">
+                        <li class="page-item">
 
-                        <a class="page-link"
-                            href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.previous_page_number }}">
-                            Previous
-                        </a>
+                            <a
+                                class="page-link"
+                                href="?page={{ invoices.previous_page_number }}&search={{ request.GET.search|default:'' }}&status={{ request.GET.status|default:'' }}&overdue={{ request.GET.overdue|default:'' }}&owner={{ request.GET.owner|default:'' }}&sort={{ request.GET.sort|default:'' }}">
 
-                    </li>
+                                Previous
+
+                            </a>
+
+                        </li>
 
                     {% endif %}
 
 
-                    <li class="page-item active">
+                    {% for num in invoices.paginator.page_range %}
 
-                        <span class="page-link">
-                            Page {{ invoices.number }}
-                            of {{ invoices.paginator.num_pages }}
-                        </span>
+                        {% if invoices.number == num %}
 
-                    </li>
+                            <li class="page-item active">
+
+                                <span class="page-link">
+                                    {{ num }}
+                                </span>
+
+                            </li>
+
+                        {% else %}
+
+                            <li class="page-item">
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ num }}&search={{ request.GET.search|default:'' }}&status={{ request.GET.status|default:'' }}&overdue={{ request.GET.overdue|default:'' }}&owner={{ request.GET.owner|default:'' }}&sort={{ request.GET.sort|default:'' }}">
+
+                                    {{ num }}
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                    {% endfor %}
 
 
                     {% if invoices.has_next %}
 
-                    <li class="page-item">
+                        <li class="page-item">
 
-                        <a class="page-link"
-                            href="?search={{ request.GET.search }}&status={{ request.GET.status }}&overdue={{ request.GET.overdue }}&owner={{ request.GET.owner }}&sort={{ request.GET.sort }}&page={{ invoices.next_page_number }}">
-                            Next
-                        </a>
+                            <a
+                                class="page-link"
+                                href="?page={{ invoices.next_page_number }}&search={{ request.GET.search|default:'' }}&status={{ request.GET.status|default:'' }}&overdue={{ request.GET.overdue|default:'' }}&owner={{ request.GET.owner|default:'' }}&sort={{ request.GET.sort|default:'' }}">
 
-                    </li>
+                                Next
+
+                            </a>
+
+                        </li>
 
                     {% endif %}
 
@@ -667,73 +819,14 @@
 
             </nav>
 
-            {% endif %}
+        {% endif %}
+
+    </div>
+
+</div>
 
 
-            {% if invoices.paginator %}
-
-            <p class="text-center">
-                Total matches:
-                {{ invoices.paginator.count }}
-            </p>
-
-            {% endif %}
-
-        </div>
-
-    </main>
-
-<!-- Sidebar Script -->
-<script>
-
-    const sidebar = document.getElementById('sidebar');
-    const content = document.querySelector('.content-wrapper');
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const closeBtn = document.getElementById('closeSidebar');
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        if (localStorage.getItem('sidebarOpen') === 'true') {
-
-            sidebar.classList.add('show');
-            content.classList.add('shifted');
-
-        }
-
-    });
-
-
-    toggleBtn.addEventListener('click', () => {
-
-        const isOpen =
-            sidebar.classList.toggle('show');
-
-        content.classList.toggle('shifted', isOpen);
-
-        localStorage.setItem(
-            'sidebarOpen',
-            isOpen
-        );
-
-    });
-
-
-    closeBtn.addEventListener('click', () => {
-
-        sidebar.classList.remove('show');
-        content.classList.remove('shifted');
-
-        localStorage.setItem(
-            'sidebarOpen',
-            false
-        );
-
-    });
-
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>
