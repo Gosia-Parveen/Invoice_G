@@ -11,6 +11,7 @@ urlpatterns = [
     path('subscript/', views.subs_tab, name="subs_tab"),
     path("subscript/add/", views.add_subscription,name="add_subscription" ),
     path("subscript/edit/<int:id>/", views.edit_subscription, name="edit_subscription"), 
+    path('subscript/archive/<int:id>/',views.archive_subscription,name='archive_subscription'),
 
     # ----------------------------------------------Invoice---------------------------------------
     path('invoices/',views.invoice_list,name='invoice_list'),
@@ -26,8 +27,7 @@ urlpatterns = [
     path('invoices/<int:invoice_id>/void/',views.void_invoice,name='void_invoice'),
 
     path('invoices/<int:invoice_id>/credit-note/',views.create_credit_note,name='create_credit_note'),
-    
+
     #--------------------------ALERT----------------------  
     path('admin-dashboard/dismiss-overdue/<int:invoice_id>/',views.dismiss_overdue_alert, name='dismiss_overdue_alert' ),
-
 ]
