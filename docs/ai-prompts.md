@@ -328,6 +328,60 @@ Code to add collaborator field in invoice form with different access according t
 ### What you corrected
 Configured the collaborator field so the Billing Admin can add a collaborator, while the Account Manager can only see the field as disabled.
                                                 ============================================================
+    8.
+## <What you were trying to achieve>
+To focus only on the two dashboards and make them as close to the given requirements as possible.
 
+### Prompt
+We’ll focus only on the two dashboards today and make them as close to these requirements as possible. Let's go slowly and step by step. First, I will send you the HTML for admin dashboard, and you will continue from there.
+
+### What you got
+The AI gave guided step by step instructions to add One feature at a time, on Admin Dashboard HTML 
+
+### What you corrected
+slowly continueously inserted all the features on Admin Dashboard HTML.
+                                                =======================================================
+
+    9.
+## <What you were trying to achieve>
+To fix the red lines appearing in VS Code because of the chart data written directly in JavaScript.
+
+### Prompt
+I thought we already discussed it. JavaScript does not support this kind of square brackets and decimals and commas and colons. It's showing all red in my feed in my VS Code. Have a look.  
+
+### What you got
+The AI moved the chart data preparation to views.py and passed it to JavaScript as JSON.
+
+### What you corrected
+Kept the JavaScript clean by preparing the chart data in views.py.
+                                                =======================================================
+
+    10.
+## <What you were trying to achieve>
+To fix the AttributeError: 'str' error occurring on the Admin Dashboard.
+
+### Prompt
+Here is the terminal error and asked to fix the Admin Dashboard code.
+
+### What you got
+The AI identified that plan in admin-dash vof view.py was a string field and therefore .name could not be used.
+
+### What you corrected
+Changed plan.name to plan in the dashboard code.
+                                                =======================================================
+
+    11.
+## <What you were trying to achieve>
+To change the font of the graph to black or hex code b50001.
+
+### Prompt
+its working perfectly though i want the font of this graph to be black or hex code b50001.
+
+### What you got
+The AI added color: hex code 'b50001' to the chart options so the labels, ticks, and legend text use that color.
+
+### What you corrected
+Updated the chart JavaScript to display the graph text in  hex code b50001.
+                                                =======================================================
 
 
