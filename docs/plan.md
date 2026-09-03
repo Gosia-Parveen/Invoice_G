@@ -46,6 +46,11 @@ I have divided the 10 task according to the days given, so i plan on completing 
     Invoices issued, Revenue collected, Applied Owned + Collaborated Subscription and Invoice Filtering,
     Added Overdue Invoice Alerts,with Restricted Alert Dismissal for Account Managers,
     -----pushed into github-----
+    Corrected Subscription page with Owner + Collaborator functionality {Restricted Invoice status actions (Issue, Paid, Void) }, and Archive support,
+    Fixed and corrected Collaborator assignment at the subscription level, with Billing Admin control + restricted Account Manager access,
+    Added Account Manager invoice visibility when they are either the Owner or Collaborator,
+    To uniform the entire interface according to the one pattern.
+    -----pushed into github-----
 
 
 
