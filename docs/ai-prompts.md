@@ -385,3 +385,20 @@ Updated the chart JavaScript to display the graph text in  hex code b50001.
                                                 =======================================================
 
 
+
+## ** DAY_5[03-09-02026]------------------------------------------------------------------------------
+    1.
+## <What you were trying to achieve>
+To build the Account Manager Dashboard with the same features, cards, and charts as the Billing Admin Dashboard, but showing only the Account Manager's own subscriptions and invoices.
+
+### Prompt
+I wanted to move from the completed Billing Admin Dashboard to the Account Manager Dashboard and implement the same features with user-specific data and invoice alerts only no dismiss button for account manager.
+
+### What you got
+An Account Manager Dashboard with the same structure and features, filtered to the logged-in Account Manager's subscriptions and invoices.
+
+### What you corrected
+Restricted the dashboard data to the Account Manager's own records and made invoice alerts visible without a dismiss button.
+
+                                                =======================================================
+
