@@ -137,7 +137,7 @@
             margin-top: 5px;
         }
 
-        /* ---------- MOBILE RESPONSIVENESS ---------- */
+        /* MOBILE RESPONSIVENESS */
         @media (max-width: 768px) {
 
             .sidebar {
@@ -270,8 +270,15 @@
                     Customer Name
                 </label>
 
-                <input type="text" class="form-control" id="customername" name="customer_name"
-                    placeholder="Customer Name" value="{{ subscription.customer_name|default:'' }}" required>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="customername"
+                    name="customer_name"
+                    placeholder="Customer Name"
+                    value="{{ subscription.customer_name|default:'' }}"
+                    required
+                >
 
 
                 <!-- BILLING EMAIL -->
@@ -279,8 +286,15 @@
                     Billing Email
                 </label>
 
-                <input type="email" class="form-control" id="billingemail" name="billing_email"
-                    placeholder="Billing Email" value="{{ subscription.billing_email|default:'' }}" required>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="billingemail"
+                    name="billing_email"
+                    placeholder="Billing Email"
+                    value="{{ subscription.billing_email|default:'' }}"
+                    required
+                >
 
 
                 <!-- PLAN -->
@@ -288,8 +302,15 @@
                     Plan
                 </label>
 
-                <input type="text" class="form-control" id="plan" name="plan" placeholder="Plan"
-                    value="{{ subscription.plan|default:'' }}" required>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="plan"
+                    name="plan"
+                    placeholder="Plan"
+                    value="{{ subscription.plan|default:'' }}"
+                    required
+                >
 
 
                 <!-- BILLING CYCLE -->
@@ -297,17 +318,28 @@
                     Billing Cycle
                 </label>
 
-                <select class="form-select" id="billingcycle" name="billing_cycle" required>
+                <select
+                    class="form-select"
+                    id="billingcycle"
+                    name="billing_cycle"
+                    required
+                >
 
                     <option value="">
                         Select Billing Cycle
                     </option>
 
-                    <option value="Monthly" {% if subscription.billing_cycle == "Monthly" %}selected{% endif %}>
+                    <option
+                        value="Monthly"
+                        {% if subscription.billing_cycle == "Monthly" %}selected{% endif %}
+                    >
                         Monthly
                     </option>
 
-                    <option value="Yearly" {% if subscription.billing_cycle == "Yearly" %}selected{% endif %}>
+                    <option
+                        value="Yearly"
+                        {% if subscription.billing_cycle == "Yearly" %}selected{% endif %}
+                    >
                         Yearly
                     </option>
 
@@ -319,8 +351,16 @@
                     Price
                 </label>
 
-                <input type="number" class="form-control" id="price" name="price" placeholder="Price"
-                    value="{{ subscription.price|default:'' }}" step="0.01" required>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="price"
+                    name="price"
+                    placeholder="Price"
+                    value="{{ subscription.price|default:'' }}"
+                    step="0.01"
+                    required
+                >
 
 
                 <!-- START DATE -->
@@ -328,8 +368,14 @@
                     Start Date
                 </label>
 
-                <input type="date" class="form-control" id="startdate" name="start_date"
-                    value="{{ subscription.start_date|date:'Y-m-d' }}" required>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="startdate"
+                    name="start_date"
+                    value="{{ subscription.start_date|date:'Y-m-d' }}"
+                    required
+                >
 
 
                 <!-- OWNER -->
@@ -340,7 +386,12 @@
                 {% if user.is_superuser %}
 
                 <!-- BILLING ADMIN -->
-                <select class="form-select" id="ownername" name="owner" required>
+                <select
+                    class="form-select"
+                    id="ownername"
+                    name="owner"
+                    required
+                >
 
                     <option value="">
                         Select Account Manager
@@ -348,10 +399,11 @@
 
                     {% for manager in account_managers %}
 
-                    <option value="{{ manager.id }}" {% if subscription.owner_id == manager.id %}selected{% endif %}>
-
+                    <option
+                        value="{{ manager.id }}"
+                        {% if subscription.owner_id == manager.id %}selected{% endif %}
+                    >
                         {{ manager.username }}
-
                     </option>
 
                     {% endfor %}
@@ -361,13 +413,19 @@
                 {% else %}
 
                 <!-- ACCOUNT MANAGER -->
-                <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                <input
+                    type="text"
+                    class="form-control"
+                    value="{{ user.username }}"
+                    disabled
+                >
 
                 <div class="helper-text">
                     You will be the owner of this subscription.
                 </div>
 
                 {% endif %}
+
 
                 <!-- COLLABORATORS -->
                 <label for="collaborators" class="form-label">
@@ -377,15 +435,21 @@
                 {% if user.is_superuser %}
 
                 <!-- BILLING ADMIN -->
-                <select name="collaborators" id="collaborators" class="form-select" multiple size="4">
+                <select
+                    name="collaborators"
+                    id="collaborators"
+                    class="form-select"
+                    multiple
+                    size="4"
+                >
 
                     {% for manager in account_managers %}
 
-                    <option value="{{ manager.id }}" {% if manager in subscription.collaborators.all %} selected {%
-                        endif %}>
-
+                    <option
+                        value="{{ manager.id }}"
+                        {% if manager in subscription.collaborators.all %}selected{% endif %}
+                    >
                         {{ manager.first_name }} {{ manager.last_name }}
-
                     </option>
 
                     {% endfor %}
@@ -399,15 +463,21 @@
                 {% else %}
 
                 <!-- ACCOUNT MANAGER -->
-                <select id="collaborators" class="form-select collaborator-disabled" multiple size="4" disabled>
+                <select
+                    id="collaborators"
+                    class="form-select collaborator-disabled"
+                    multiple
+                    size="4"
+                    disabled
+                >
 
                     {% for manager in account_managers %}
 
-                    <option value="{{ manager.id }}" {% if manager in subscription.collaborators.all %} selected {%
-                        endif %}>
-
+                    <option
+                        value="{{ manager.id }}"
+                        {% if manager in subscription.collaborators.all %}selected{% endif %}
+                    >
                         {{ manager.first_name }} {{ manager.last_name }}
-
                     </option>
 
                     {% endfor %}
@@ -424,7 +494,10 @@
                 <!-- BUTTONS -->
                 <div class="d-flex justify-content-center gap-3 mt-4">
 
-                    <button type="submit" class="btn btn-submit px-4">
+                    <button
+                        type="submit"
+                        class="btn btn-submit px-4"
+                    >
 
                         {% if subscription %}
                         Save Changes
@@ -434,10 +507,11 @@
 
                     </button>
 
-                    <a href="{% url 'subs_tab' %}" class="btn btn-back px-4">
-
+                    <a
+                        href="{% url 'subs_tab' %}"
+                        class="btn btn-back px-4"
+                    >
                         Go Back
-
                     </a>
 
                 </div>
