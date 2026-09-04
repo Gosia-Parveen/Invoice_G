@@ -102,7 +102,7 @@
             background: linear-gradient(to left, #f3f4f5, #ff9408);
         }
 
-        
+
         /* ---------- MOBILE RESPONSIVENESS ---------- */
         @media (max-width: 768px) {
 
@@ -149,7 +149,6 @@
                 font-size: 24px;
             }
         }
-
     </style>
 </head>
 
@@ -162,16 +161,16 @@
 
         <div class="role">
             {% if user.is_superuser %}
-                Billing Admin
+            Billing Admin
             {% else %}
-                Account Manager ({{ user.first_name }})
+            Account Manager ({{ user.first_name }})
             {% endif %}
         </div>
 
         {% if user.is_superuser %}
-            <a href="{% url 'admin_dash' %}">Dashboard</a>
+        <a href="{% url 'admin_dash' %}">Dashboard</a>
         {% else %}
-            <a href="{% url 'acc_man' %}">Dashboard</a>
+        <a href="{% url 'acc_man' %}">Dashboard</a>
         {% endif %}
 
         <a href="{% url 'subs_tab' %}">Subscriptions</a>
@@ -195,9 +194,7 @@
                 Subscriptions
             </h2>
 
-            <a
-                class="btn btn-danger"
-                href="{% url 'add_subscription' %}">
+            <a class="btn btn-danger" href="{% url 'add_subscription' %}">
                 + Add New Subscription
             </a>
 
@@ -206,21 +203,18 @@
 
         <!-- MESSAGES -->
         {% if messages %}
-            {% for message in messages %}
+        {% for message in messages %}
 
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
 
-                    {{ message }}
+            {{ message }}
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                    </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert">
+            </button>
 
-                </div>
+        </div>
 
-            {% endfor %}
+        {% endfor %}
         {% endif %}
 
 
@@ -242,6 +236,7 @@
                             <th>Price</th>
                             <th>Start Date</th>
                             <th>Owner</th>
+                            <th>Collaborators</th>
                             <th>Action</th>
                         </tr>
 
@@ -284,22 +279,25 @@
                             <td>
                                 {{ subscription.owner.username }}
                             </td>
+                            <td>
+                                {% for collaborator in subscription.collaborators.all %}
+                                {{ collaborator.username }}{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                <span class="text-muted">None</span>
+                                {% endfor %}
+                            </td>
 
                             <td>
 
                                 <!-- EDIT -->
-                                <a
-                                    class="btn btn-sm btn-outline-primary"
+                                <a class="btn btn-sm btn-outline-primary"
                                     href="{% url 'edit_subscription' subscription.id %}">
                                     Edit
                                 </a>
 
 
                                 <!-- ARCHIVE -->
-                                <button
-                                    type="button"
-                                    class="btn btn-sm archive-btn"
-                                    data-bs-toggle="modal"
+                                <button type="button" class="btn btn-sm archive-btn" data-bs-toggle="modal"
                                     data-bs-target="#archiveModal{{ subscription.id }}">
                                     Archive
                                 </button>
@@ -310,12 +308,8 @@
 
 
                         <!-- ARCHIVE CONFIRMATION MODAL -->
-                        <div
-                            class="modal fade"
-                            id="archiveModal{{ subscription.id }}"
-                            tabindex="-1"
-                            aria-labelledby="archiveModalLabel{{ subscription.id }}"
-                            aria-hidden="true">
+                        <div class="modal fade" id="archiveModal{{ subscription.id }}" tabindex="-1"
+                            aria-labelledby="archiveModalLabel{{ subscription.id }}" aria-hidden="true">
 
                             <div class="modal-dialog modal-dialog-centered">
 
@@ -323,16 +317,11 @@
 
                                     <div class="modal-header">
 
-                                        <h5
-                                            class="modal-title"
-                                            id="archiveModalLabel{{ subscription.id }}">
+                                        <h5 class="modal-title" id="archiveModalLabel{{ subscription.id }}">
                                             Archive Subscription
                                         </h5>
 
-                                        <button
-                                            type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
                                         </button>
 
                                     </div>
@@ -359,24 +348,17 @@
 
                                     <div class="modal-footer">
 
-                                        <button
-                                            type="button"
-                                            class="btn btn-secondary"
-                                            data-bs-dismiss="modal">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                             Cancel
                                         </button>
 
 
-                                        <form
-                                            method="POST"
-                                            action="{% url 'archive_subscription' subscription.id %}"
+                                        <form method="POST" action="{% url 'archive_subscription' subscription.id %}"
                                             class="d-inline">
 
                                             {% csrf_token %}
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-danger">
+                                            <button type="submit" class="btn btn-danger">
                                                 Archive
                                             </button>
 
@@ -394,10 +376,7 @@
 
                         <tr>
 
-                            <td
-                                colspan="9"
-                                class="text-center text-muted py-4">
-
+                            <td colspan="10" class="text-center text-muted py-4">
                                 No subscriptions found.
 
                             </td>
