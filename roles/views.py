@@ -505,9 +505,18 @@ def edit_subscription(request, id):
         "subscription": subscription,
         "account_managers": account_managers
     })
-# -------------------------------Subs_FORM_ARCHIEVE----------------------------------------------------
+
+# -------------------------------SUBSCRIPTION_ARCHIVE----------------------------------------------------
+# Archive a subscription Only Billing Admin can archive
 @login_required
 def archive_subscription(request, id):
+
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to archive this subscription.'
+        )
+        return redirect('subs_tab')
 
     subscription = get_object_or_404(
         Subscription,
@@ -516,22 +525,6 @@ def archive_subscription(request, id):
 
     if request.method != "POST":
         return redirect('subs_tab')
-
-    # Account Manager can archive only subscriptions
-    # they own or collaborate on
-    if request.user.groups.filter(name='Account Manager').exists():
-
-        if (
-            subscription.owner != request.user
-            and not subscription.collaborators.filter(
-                id=request.user.id
-            ).exists()
-        ):
-            messages.error(
-                request,
-                'You do not have permission to archive this subscription.'
-            )
-            return redirect('subs_tab')
 
     subscription.is_archived = True
     subscription.save(update_fields=['is_archived'])
@@ -542,6 +535,64 @@ def archive_subscription(request, id):
     )
 
     return redirect('subs_tab')
+
+
+# -------------------------------VIEW_ARCHIVE----------------------------------------------------
+# Display archived subscriptions Only Billing Admin can view this page
+@login_required
+def view_archived_subscriptions(request):
+
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to view archived subscriptions.'
+        )
+        return redirect('subs_tab')
+
+    subscriptions = Subscription.objects.filter(
+        is_archived=True
+    ).select_related('owner')
+
+    return render(
+        request,
+        'archive.html',
+        {
+            'subscriptions': subscriptions
+        }
+    )
+
+
+# -------------------------------RESTORES SUBSCRIPTIONS----------------------------------------------------
+# Restore an archived subscription Only Billing Admin can restore
+@login_required
+def restore_subscription(request, id):
+
+    # Only Billing Admin can restore subscriptions
+    if not request.user.is_superuser:
+        messages.error(
+            request,
+            'You do not have permission to restore this subscription.'
+        )
+        return redirect('subs_tab')
+
+    subscription = get_object_or_404(
+        Subscription,
+        id=id,
+        is_archived=True
+    )
+
+    if request.method != "POST":
+        return redirect('view_archived_subscriptions')
+
+    subscription.is_archived = False
+    subscription.save(update_fields=['is_archived'])
+
+    messages.success(
+        request,
+        'Subscription restored successfully.'
+    )
+
+    return redirect('view_archived_subscriptions')
 
 
 # -------------------------------LIST ALL INVOICES----------------------------------------------------
