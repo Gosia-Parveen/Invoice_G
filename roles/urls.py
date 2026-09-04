@@ -12,6 +12,8 @@ urlpatterns = [
     path("subscript/add/", views.add_subscription,name="add_subscription" ),
     path("subscript/edit/<int:id>/", views.edit_subscription, name="edit_subscription"), 
     path('subscript/archive/<int:id>/',views.archive_subscription,name='archive_subscription'),
+    path('archived-subscriptions/', views.view_archived_subscriptions,name='view_archived_subscriptions'),
+    path('archived-subscriptions/restore/<int:id>/',views.restore_subscription,name='restore_subscription'),
 
     # ----------------------------------------------Invoice---------------------------------------
     path('invoices/',views.invoice_list,name='invoice_list'),
