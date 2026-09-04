@@ -495,6 +495,58 @@ The live site was repopulated with new data, and the required users and permissi
 ## What you corrected
 We continued using Django Admin through the Render site only for managing the production users and data, rather than using the local Django Admin for the live database.
                                                 =======================================================
+    4. 
+## <What you were trying to achieve>
+I found a fault in credit note button while testing the site so to make the Credit Note button properly create a credit note and send all the required information from the HTML form to the backend.
 
+## Prompt
+I found that the Credit Note button was present in the interface, but it was not doing anything. Help me fix it, here the html.
 
+## What you got
+The Credit Note functionality was present in the backend and visible in the HTML, but the form was not sending all the required information, so the action was not completing.
 
+## What you corrected**
+We corrected the HTML form so that the required reason was properly sent to the backend, and the Credit Note functionality started working correctly.
+                                                =======================================================
+    5. 
+
+## <What you were trying to achieve>
+To make archived subscriptions be stored somewhere so the Billing Admin can view and restore when required, instead of disappearing without any way to retrieve them.
+
+## Prompt
+I noticed that after archiving a subscription, I did not know where it was going. There was no page where the Billing Admin could see the archived subscriptions or restore them. Give me guided steps to solve this problem.
+
+## What you got
+Instructions to build a archive html page and attach it in Admin sidebar so that archive subscription can be presented ther and can be restored from there by  Billing Admin.
+
+## What you corrected
+We added a separate Archive HTML page which was accessible only through the Billing Admin Dashboard. The Billing Admin can view the archived subscriptions there and restore them when required.
+                                               =======================================================
+    6.
+
+## <What you were trying to achieve>
+I found that the Account manager had the power to create a subscription under another Account Manager's name. I wanted to correct the access of account manager.
+
+## Prompt
+I found that an Account Manager was able to create a subscription and select another Account Manager as its Owner. This was a complete violation of the required permissions. So give the changes to fix it without  completely altering my work.
+
+## What you got
+The Subscription Form was allowing Account Managers to select an Owner, which meant they could create a subscription under someone else's name. So appropriate change were given to fix that.
+
+## What you corrected
+We changed the logic so that when an Account Manager creates a subscription, it is automatically assigned to that Account Manager. Only the Billing Admin gets the option to select a specific Owner while creating a subscription.
+                                               =======================================================
+    7.
+
+## <What you were trying to achieve>
+To make the website usable not only on a desktop but also on mobile devices, without breaking the existing layout or functionality.
+
+## Prompt
+I wanted the complete website to be responsive so that the pages could also be properly accessed and used on mobile screens.
+
+## What you got
+The website was mainly designed around the desktop layout, so the pages needed further refinement for smaller screens.
+
+## What you corrected
+We added mobile responsiveness across all the pages, adjusting the layouts and Bootstrap styling so that the website can also be used on mobile devices while keeping the existing features and functionality.
+                                                =======================================================
