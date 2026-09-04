@@ -15,7 +15,7 @@ If you did not use AI at all, say so here, and describe your process instead.
 ### What you corrected
 
 
-## ** DAY_1[30-08-02026]------------------------------------------------------------------------------
+## ------------------------------------------------------** DAY_1[30-08-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>:
@@ -79,7 +79,7 @@ It told the post form in HTML is correct.
 I spotted that it was checking against username, not email address and so asked Ai to fixed in the view.py so that it will check corresponding to email IDs instead of actual username.
 
 
-## ** DAY_2[31-08-02026]------------------------------------------------------------------------------
+## ----------------------------------------------------------** DAY_2[31-08-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>:
@@ -175,7 +175,7 @@ Corrected the single = sign to == for comparison in the Django template language
 
 
 
-## ** DAY_3[01-09-02026]------------------------------------------------------------------------------
+## ** ---------------------------------------------------------DAY_3[01-09-02026]------------------------------------------------------------------------------
 
     1.
 # <What you were trying to achieve>
@@ -235,7 +235,7 @@ Removed the duplicate Subscription <select> block and the extra </select> tag, f
 
 
 
-## ** DAY_4[02-09-02026]------------------------------------------------------------------------------
+## ---------------------------------------------------------** DAY_4[02-09-02026]------------------------------------------------------------------------------
 
     1.
 ## <What you were trying to achieve>
@@ -385,7 +385,7 @@ Updated the chart JavaScript to display the graph text in  hex code b50001.
                                                 =======================================================
 
 
-## ** DAY_5[03-09-02026]------------------------------------------------------------------------------
+## --------------------------------------------------------** DAY_5[03-09-02026]------------------------------------------------------------------------------
     1.
 ## <What you were trying to achieve>
 To build the Account Manager Dashboard with the same features, cards, and charts as the Billing Admin Dashboard, but showing only the Account Manager's own subscriptions and invoices.
@@ -453,4 +453,48 @@ The pages had inconsistent styling, layouts, and Bootstrap components in differe
 ### What you corrected
 Standardized the overall interface, refined the existing styling according to the provided design, and applied consistent Bootstrap-based styling across the different pages and components.
                                                 =======================================================
+
+## -------------------------------------------------------** DAY_6[04-09-02026]------------------------------------------------------------------------------
+
+    1.
+## <What you were trying to achieve>
+To understand the complete deployment process before actually starting it, so that I knew what needed to be done to make my local Django website live.
+
+### Prompt
+I instructed AI to give me a step-by-step guide to connect my local site and deploy it using **Render, Supabase, and GitHub**, but first I wanted to finalise the complete plan. I specifically asked AI to explain the plan first and only give me the actual steps when I said to proceed.
+
+### What you got
+AI explained and discussed the complete deployment plan in detail before I started making the actual changes.
+
+### What you corrected
+I did not immediately start following random deployment steps. I first understood the overall process and then proceeded step by step so I could keep track of what was happening.
+                                                =======================================================
+    2.
+## <What you were trying to achieve>
+To make the deployment process easier to understand and manage by dividing it into three clear parts instead of trying to do everything at once.
+
+## Prompt
+I asked AI to divide the deployment process into three parts: first adding and connecting Supabase, then connecting the project with GitHub, and finally deploying it using Render.
+
+## What you got
+The deployment was handled step by step, first connecting the database through Supabase, then pushing and connecting the project through GitHub, and finally using Render to make the Django application live.
+
+## What you corrected
+I kept the deployment process separated into these three parts so that I could complete and check each stage before moving to the next one, rather than making all the changes together and getting confused if something went wrong.
+                                                =======================================================
+    3.
+## <What you were trying to achieve>
+To make sure the live website had proper data and that the required Billing Admin and Account Manager users were available for testing.
+
+## Prompt
+After deploying the website, generate data so I repopulated the site with new data and created the required superusers again so that I could test the live system properly.
+
+## What you got
+The live site was repopulated with new data, and the required users and permissions were created again for the production environment.
+
+## What you corrected
+We continued using Django Admin through the Render site only for managing the production users and data, rather than using the local Django Admin for the live database.
+                                                =======================================================
+
+
 
