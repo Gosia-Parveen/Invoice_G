@@ -52,7 +52,16 @@ I have divided the 10 task according to the days given, so i plan on completing 
     To uniform the entire interface according to the one pattern.
     -----pushed into github-----
 
+**## Day_6: DEPLOYED {completed}**
+    Connected Invoice_G Django project to Supabase for the PostgreSQL database,
+    Connected GitHub with Render and created the Django web service,
+    Added Supabase database variables to Render and ran migrations + collected static files,
+    Created the required production users and permissions through Django Admin on the Render site,
+    Tested Billing Admin and Account Manager login and confirmed that the live application was working,
+    ----------Updated all the doc in github-------------------------
+    
                                                         -------------------------------------------------------
+
 - What did you estimate versus what it actually took?
 ##
 I initially estimated that I could complete 2 tasks per day and finish all 10 tasks in 5 days, leaving the last 2 days strictly for hosting and testing.
