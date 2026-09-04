@@ -11,7 +11,7 @@ Answer each of these, in your own words, once the system has taken real shape.
     -When an invoice is created for a subscription, the invoice is connected to that subscription, so the related customer and subscription information can be used while creating the invoice. The Owner and Collaborator relationship is managed through the subscription, which also controls which invoices an Account Manager can see.
 
     -The same data is then used by the dashboards. The Billing Admin can see all subscriptions, invoices, charts, and alerts, while an Account Manager can see only the subscriptions and invoices where they are either the Owner or Collaborator. The interface also changes according to the logged-in role, such as displaying the Account Manager's name and role, while the Billing Admin is displayed simply as Billing Admin.
--------------------------------------------------------------------------------
+
 
 - Where does each piece run?
     ## 
@@ -24,7 +24,7 @@ Answer each of these, in your own words, once the system has taken real shape.
     -When you log in as an Account Manager, the Subscription and Invoice features follow the same general structure, but with restrictions. In the Subscription Form, the Account Manager cannot add Collaborators. The Subscription page only displays subscriptions where they are either the Owner or Collaborator. The same access logic is followed for invoices, so they can only see and create invoices for subscriptions they have access to. They cannot mark invoices as Paid, Void, or Issued.
 
     -The Dashboard is also different according to the role. The Billing Admin sees graphs, charts, cards, and information related to all subscriptions and invoices, whereas the Account Manager sees only information related to the subscriptions where they are the Owner or Collaborator. The Billing Admin can also dismiss overdue invoice alerts, while the Account Manager can only view the alerts.
--------------------------------------------------------------------------------
+
 
 - What is the request path for one representative user action, end to end?
     ##
@@ -33,15 +33,16 @@ Answer each of these, in your own words, once the system has taken real shape.
 Login → Billing Admin → Subscription → Subscription Form → Submit → Subscription stored in Database → Invoice → Invoice Form → Submit → Invoice stored in Database → Billing Admin Dashboard/Page
 
 The Billing Admin has full access to the subscription and invoice features, including adding Collaborators, editing records, changing invoice status, and adding Credit Notes.
-                            =======================
+    
+                            
 ##
     -For an Account Manager, the flow is:
 
 Login → Account Manager → Subscription → Subscription Form → Submit → Subscription/Invoice data → Invoice → Invoice Form → Submit → Account Manager
 
 However, the Account Manager's access is restricted based on whether they are the Owner or Collaborator of the subscription. They cannot add Collaborators or change invoice status to Issued, Paid, or Void.
-    -------------------------------------------------------------------------------
-
+  
+    
 - What did you decide *not* to build, and why?
     ##
     -I decided not to build Generating invoices in bulk and History you cannot rewrite.*##* TASK: 7 AND 9 *##*
@@ -51,8 +52,8 @@ However, the Account Manager's access is restricted based on whether they are th
     -The second reason was time. I had decided that the last two days would be strictly for hosting, because if the hosting did not work, the rest of the completed work would not be useful for the final submission. Because of this time limitation, I had to skip these two tasks.
 
 If I had been given more time, I would have completed them as well.
-    -------------------------------------------------------------------------------
-
+   
+    
 
 ** ## ACRCHITECTURE **
 
