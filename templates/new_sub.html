@@ -303,11 +303,11 @@
                         Select Billing Cycle
                     </option>
 
-                    <option value="Monthly" {% if subscription.billing_cycle=="Monthly" %}selected{% endif %}>
+                    <option value="Monthly" {% if subscription.billing_cycle == "Monthly" %}selected{% endif %}>
                         Monthly
                     </option>
 
-                    <option value="Yearly" {% if subscription.billing_cycle=="Yearly" %}selected{% endif %}>
+                    <option value="Yearly" {% if subscription.billing_cycle == "Yearly" %}selected{% endif %}>
                         Yearly
                     </option>
 
@@ -348,7 +348,7 @@
 
                     {% for manager in account_managers %}
 
-                    <option value="{{ manager.id }}" {% if subscription.owner_id==manager.id %}selected{% endif %}>
+                    <option value="{{ manager.id }}" {% if subscription.owner_id == manager.id %}selected{% endif %}>
 
                         {{ manager.username }}
 
