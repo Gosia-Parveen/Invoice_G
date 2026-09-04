@@ -440,6 +440,7 @@ def subs_tab(request):
         "subscriptions": subscriptions
     })
 
+
 # -------------------------------Subs_add_new_FORM--------------------------------------------
 @login_required
 def add_subscription(request):
@@ -450,6 +451,23 @@ def add_subscription(request):
 
     if request.method == "POST":
 
+        # Billing Admin can choose the owner
+        if request.user.is_superuser:
+            owner_id = request.POST.get("owner")
+
+        # Account Manager must always be the owner
+        elif request.user.groups.filter(
+            name="Account Manager"
+        ).exists():
+            owner_id = request.user.id
+
+        else:
+            messages.error(
+                request,
+                "You do not have permission to create a subscription."
+            )
+            return redirect("subs_tab")
+
         subscription = Subscription.objects.create(
             customer_name=request.POST.get("customer_name"),
             billing_email=request.POST.get("billing_email"),
@@ -457,7 +475,7 @@ def add_subscription(request):
             billing_cycle=request.POST.get("billing_cycle"),
             price=request.POST.get("price"),
             start_date=request.POST.get("start_date"),
-            owner_id=request.POST.get("owner")
+            owner_id=owner_id
         )
 
         # Only Billing Admin can assign collaborators
