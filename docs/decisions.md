@@ -77,3 +77,13 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 **Why:** because the frontend is built directly into Django templates rather than being a separate frontend application. Since Render can host the complete Django application, I thought adding Vercel would be unnecessary.
                                               ---------------------------------------------------------
 
+## Decision 11**
+
+**Chose:** To making the complete website only laptops or desktops responsive.
+**Later reversed:** Making the complete website mobile responsive so that all pages can be easily used on mobile phones, not just on laptops or desktops.
+**Rejected:** Designing the website mainly for laptops/desktops and leaving mobile users with a non-responsive layout.
+
+**Why:** Usually, people do not open a laptop just to visit a website. Almost everyone has a mobile phone in their hand, so they can simply click on a link and open the website on their phone. If the website is not mobile responsive, the layout may be difficult or frustrating to use, which could upset customers and make them prefer another website rather than opening a laptop just to use it.
+                                              ---------------------------------------------------------
+
+
