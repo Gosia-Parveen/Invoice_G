@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Archived Subscriptions</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to left, #faec87, #fcba95);
+            font-family: Arial, sans-serif;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background: #b50001;
+            color: white;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .sidebar .role {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-weight: bold;
+            color: #b50001;
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        table {
+            vertical-align: middle;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        td {
+            white-space: nowrap;
+        }
+
+        .restore-btn {
+            color: white;
+            background: linear-gradient(to left, #198754, #12633e);
+            border: none;
+        }
+
+        .restore-btn:hover {
+            color: white;
+            background: linear-gradient(to left, #12633e, #198754);
+        }
+
+        /* ---------- MOBILE RESPONSIVENESS ---------- */
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 15px 12px;
+            }
+
+            .sidebar h3 {
+                font-size: 22px;
+            }
+
+            .sidebar .role {
+                margin-bottom: 15px;
+            }
+
+            .sidebar a {
+                padding: 10px 12px;
+                margin-bottom: 5px;
+            }
+
+            .logout {
+                position: static;
+                margin-top: 10px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .table-container {
+                padding: 12px;
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 850px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h3>Invoice_G</h3>
+
+        <div class="role">
+            {% if user.is_superuser %}
+            Billing Admin
+            {% else %}
+            Account Manager ({{ user.first_name }})
+            {% endif %}
+        </div>
+
+        {% if user.is_superuser %}
+        <a href="{% url 'admin_dash' %}">Dashboard</a>
+        {% else %}
+        <a href="{% url 'acc_man' %}">Dashboard</a>
+        {% endif %}
+
+        <a href="{% url 'subs_tab' %}">Subscriptions</a>
+
+        <a href="{% url 'invoice_list' %}">Invoices</a>
+
+        <div class="logout">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- PAGE HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2 class="page-title">
+                Archived Subscriptions
+            </h2>
+
+            <a class="btn btn-secondary" href="{% url 'subs_tab' %}">
+                Back to Subscriptions
+            </a>
+
+        </div>
+
+
+        <!-- MESSAGES -->
+        {% if messages %}
+        {% for message in messages %}
+
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+
+            {{ message }}
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+        {% endfor %}
+        {% endif %}
+
+
+        <!-- ARCHIVED SUBSCRIPTION TABLE -->
+        <div class="table-container">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Billing Email</th>
+                            <th>Plan</th>
+                            <th>Billing Cycle</th>
+                            <th>Price</th>
+                            <th>Start Date</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for subscription in subscriptions %}
+
+                        <tr>
+
+                            <th scope="row">
+                                {{ forloop.counter }}
+                            </th>
+
+                            <td>
+                                {{ subscription.customer_name }}
+                            </td>
+
+                            <td>
+                                {{ subscription.billing_email }}
+                            </td>
+
+                            <td>
+                                {{ subscription.plan }}
+                            </td>
+
+                            <td>
+                                {{ subscription.billing_cycle }}
+                            </td>
+
+                            <td>
+                                ₹{{ subscription.price }}
+                            </td>
+
+                            <td>
+                                {{ subscription.start_date|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                {{ subscription.owner.username }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary">
+                                    Archived
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <button type="button"
+                                    class="btn btn-sm restore-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#restoreModal{{ subscription.id }}">
+                                    Restore
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- RESTORE CONFIRMATION MODAL -->
+                        <div class="modal fade"
+                            id="restoreModal{{ subscription.id }}"
+                            tabindex="-1"
+                            aria-labelledby="restoreModalLabel{{ subscription.id }}"
+                            aria-hidden="true">
+
+                            <div class="modal-dialog modal-dialog-centered">
+
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+
+                                        <h5 class="modal-title"
+                                            id="restoreModalLabel{{ subscription.id }}">
+                                            Restore Subscription
+                                        </h5>
+
+                                        <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal">
+                                        </button>
+
+                                    </div>
+
+
+                                    <div class="modal-body">
+
+                                        Are you sure you want to restore the
+                                        subscription for
+
+                                        <strong>
+                                            {{ subscription.customer_name }}
+                                        </strong>?
+
+                                        <br><br>
+
+                                        <small class="text-muted">
+                                            The subscription will return to the
+                                            active subscription list.
+                                        </small>
+
+                                    </div>
+
+
+                                    <div class="modal-footer">
+
+                                        <button type="button"
+                                            class="btn btn-secondary"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+
+                                        <form method="POST"
+                                            action="{% url 'restore_subscription' subscription.id %}"
+                                            class="d-inline">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit"
+                                                class="btn btn-success">
+                                                Restore
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="10"
+                                class="text-center text-muted py-4">
+
+                                No archived subscriptions found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
