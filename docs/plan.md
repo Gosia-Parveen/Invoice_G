@@ -2,14 +2,16 @@
 
 Answer each of these, in your own words.
 
-- How did you break the work into sessions?
+- ## How did you break the work into sessions?
 ## 
 I have divided the 10 task according to the days given, so i plan on completing 2 tasks daily which means in 5 days all 10 tasks will be completed. I will have 2 days to host and test the site.
-                                                        -------------------------------------------------------
+ 
+                                                        
 - What order did you build in, and why that order?
 **## Day_1: Task 1{completed}**
-    -Setup Django framework,
-    -Create Billing admin and Account Manager
+
+- Setup Django framework,
+- Create Billing admin and Account Manager
     Built Login page
     ----pushed into github-----
     Built + connected Admin-Dashboard
