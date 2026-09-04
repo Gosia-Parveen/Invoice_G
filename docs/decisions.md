@@ -68,4 +68,12 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 **Chose:** I found the AI structure and model fault about the **collaboration part, owner part, archival part, and a few of the designing**. I pointed it out and asked AI to fix just according to my needs.
 **Rejected:** Trusting AI blindly and accepting the structure, model, and design without rechecking.
 **Why:** I kept on rechecking the work and correcting the AI whenever something did not match my actual needs.
+                                              ---------------------------------------------------------
+
+## Decision 10**
+
+**Chose:** I used **Django** for creating the website locally, then uploading the project to **GitHub** and making it live using **Supabase and Render**.
+**Rejected:** Using **Vercel** for hosting the frontend.
+**Why:** because the frontend is built directly into Django templates rather than being a separate frontend application. Since Render can host the complete Django application, I thought adding Vercel would be unnecessary.
+                                              ---------------------------------------------------------
 
