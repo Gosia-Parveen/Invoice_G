@@ -154,25 +154,22 @@
 <body>
 
     <!-- SIDEBAR -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
 
         <h3>Invoice_G</h3>
 
         <div class="role">
-            {% if user.is_superuser %}
             Billing Admin
-            {% else %}
-            Account Manager ({{ user.first_name }})
-            {% endif %}
         </div>
 
-        {% if user.is_superuser %}
         <a href="{% url 'admin_dash' %}">Dashboard</a>
-        {% else %}
-        <a href="{% url 'acc_man' %}">Dashboard</a>
-        {% endif %}
 
         <a href="{% url 'subs_tab' %}">Subscriptions</a>
+
+        <a href="{% url 'view_archived_subscriptions' %}">
+            Archived Subscriptions
+        </a>
 
         <a href="{% url 'invoice_list' %}">Invoices</a>
 
@@ -287,9 +284,7 @@
 
                             <td>
 
-                                <button type="button"
-                                    class="btn btn-sm restore-btn"
-                                    data-bs-toggle="modal"
+                                <button type="button" class="btn btn-sm restore-btn" data-bs-toggle="modal"
                                     data-bs-target="#restoreModal{{ subscription.id }}">
                                     Restore
                                 </button>
@@ -300,11 +295,8 @@
 
 
                         <!-- RESTORE CONFIRMATION MODAL -->
-                        <div class="modal fade"
-                            id="restoreModal{{ subscription.id }}"
-                            tabindex="-1"
-                            aria-labelledby="restoreModalLabel{{ subscription.id }}"
-                            aria-hidden="true">
+                        <div class="modal fade" id="restoreModal{{ subscription.id }}" tabindex="-1"
+                            aria-labelledby="restoreModalLabel{{ subscription.id }}" aria-hidden="true">
 
                             <div class="modal-dialog modal-dialog-centered">
 
@@ -312,14 +304,11 @@
 
                                     <div class="modal-header">
 
-                                        <h5 class="modal-title"
-                                            id="restoreModalLabel{{ subscription.id }}">
+                                        <h5 class="modal-title" id="restoreModalLabel{{ subscription.id }}">
                                             Restore Subscription
                                         </h5>
 
-                                        <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
                                         </button>
 
                                     </div>
@@ -346,20 +335,16 @@
 
                                     <div class="modal-footer">
 
-                                        <button type="button"
-                                            class="btn btn-secondary"
-                                            data-bs-dismiss="modal">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                             Cancel
                                         </button>
 
-                                        <form method="POST"
-                                            action="{% url 'restore_subscription' subscription.id %}"
+                                        <form method="POST" action="{% url 'restore_subscription' subscription.id %}"
                                             class="d-inline">
 
                                             {% csrf_token %}
 
-                                            <button type="submit"
-                                                class="btn btn-success">
+                                            <button type="submit" class="btn btn-success">
                                                 Restore
                                             </button>
 
@@ -377,8 +362,7 @@
 
                         <tr>
 
-                            <td colspan="10"
-                                class="text-center text-muted py-4">
+                            <td colspan="10" class="text-center text-muted py-4">
 
                                 No archived subscriptions found.
 
