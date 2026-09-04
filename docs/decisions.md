@@ -49,39 +49,41 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 
 ## Decision 7**
 
-**Chose:** Added Account Manager invoice visibility when they are either the **Owner or Collaborator**.
-**Rejected:** Giving Account Managers invoice visibility without checking whether they are the **Owner or Collaborator**.
-**Why:** Account Managers should only see the invoices related to their own subscription access.
-                                           
-                                              
+- **Chose:** Added Account Manager invoice visibility when they are either the **Owner or Collaborator**.
+- **Rejected:** Giving Account Managers invoice visibility without checking whether they are the **Owner or Collaborator**.
+- **Why:** Account Managers should only see the invoices related to their own subscription access.
+                    
+                    
 ## Decision 8**
 
-**Chose:** Keeping the Collaborator field in the Invoice form initially, because I thought collaborator information should also be directly handled while creating an invoice.
- **Later reversed:** Removed the unnecessary **Collaborator field from the Invoice form**, since it is managed through subscriptions.
-**Rejected:** Keeping a separate **Collaborator field in the Invoice form**.
-**Why:** Collaborators are already managed through subscriptions, so adding the same field in invoices was unnecessary.
-                                             
-                                              
+- **Chose:** Keeping the Collaborator field in the Invoice form initially, because I thought collaborator information should also be directly handled while creating an invoice.
+- **Later reversed:** Removed the unnecessary **Collaborator field from the Invoice form**, since it is managed through subscriptions.
+- **Rejected:** Keeping a separate **Collaborator field in the Invoice form**.
+- **Why:** Collaborators are already managed through subscriptions, so adding the same field in invoices was unnecessary.
+               
+               
 ## Decision 9**
 
-**Chose:** I found the AI structure and model fault about the **collaboration part, owner part, archival part, and a few of the designing**. I pointed it out and asked AI to fix just according to my needs.
-**Rejected:** Trusting AI blindly and accepting the structure, model, and design without rechecking.
-**Why:** I kept on rechecking the work and correcting the AI whenever something did not match my actual needs.
-                                             
-                                              
+- **Chose:** I found the AI structure and model fault about the **collaboration part, owner part, archival part, and a few of the designing**. I pointed it out and asked AI to fix just according to my needs.
+- **Rejected:** Trusting AI blindly and accepting the structure, model, and design without rechecking.
+- **Why:** I kept on rechecking the work and correcting the AI whenever something did not match my actual needs.
+                    
+                    
 ## Decision 10**
 
-**Chose:** I used **Django** for creating the website locally, then uploading the project to **GitHub** and making it live using **Supabase and Render**.
-**Rejected:** Using **Vercel** for hosting the frontend.
-**Why:** because the frontend is built directly into Django templates rather than being a separate frontend application. Since Render can host the complete Django application, I thought adding Vercel would be unnecessary.
-                                             
-                                              
+- **Chose:** I used **Django** for creating the website locally, then uploading the project to **GitHub** and making it live using **Supabase and Render**.
+- **Rejected:** Using **Vercel** for hosting the frontend.
+- **Why:** because the frontend is built directly into Django templates rather than being a separate frontend application. Since Render can host the complete Django application, I thought adding Vercel would be unnecessary.
+                       
+                       
 ## Decision 11**
 
-**Chose:** To making the complete website only laptops or desktops responsive.
-**Later reversed:** Making the complete website mobile responsive so that all pages can be easily used on mobile phones, not just on laptops or desktops.
-**Rejected:** Designing the website mainly for laptops/desktops and leaving mobile users with a non-responsive layout.
+- **Chose:** To making the complete website only laptops or desktops responsive.
+- **Later reversed:** Making the complete website mobile responsive so that all pages can be easily used on mobile phones, not just on laptops or desktops.
+- **Rejected:** Designing the website mainly for laptops/desktops and leaving mobile users with a non-responsive layout.
 
-**Why:** Usually, people do not open a laptop just to visit a website. Almost everyone has a mobile phone in their hand, so they can simply click on a link and open the website on their phone. If the website is not mobile responsive, the layout may be difficult or frustrating to use, which could upset customers and make them prefer another website rather than opening a laptop just to use it.
-                                          
-                                              
+- **Why:** Usually, people do not open a laptop just to visit a website. Almost everyone has a mobile phone in their hand, so they can simply click on a link and open the website on their phone. If the website is not mobile responsive, the layout may be difficult or frustrating to use, which could upset customers and make them prefer another website rather than opening a laptop just to use it.
+                                             
+                                             
+
+
