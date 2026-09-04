@@ -50,7 +50,7 @@ The project currently includes **three Account Manager users**.
 
 ## Live Application
 - https://invoice-g-bq3c.onrender.com
-The application is deployed on **Render** and can be accessed through the live deployment link provided above.
+- The application is deployed on **Render** and can be accessed through the live deployment link provided above.
 
 > **Note:** Since the application is hosted on Render, the first request may take some time if the service has been idle.
 
