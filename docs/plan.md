@@ -8,8 +8,8 @@ I have divided the 10 task according to the days given, so i plan on completing 
                                                         -------------------------------------------------------
 - What order did you build in, and why that order?
 **## Day_1: Task 1{completed}**
-    Setup Django framework,
-    Create Billing admin and Account Manager
+    -Setup Django framework,
+    -Create Billing admin and Account Manager
     Built Login page
     ----pushed into github-----
     Built + connected Admin-Dashboard
@@ -59,17 +59,24 @@ I have divided the 10 task according to the days given, so i plan on completing 
     Created the required production users and permissions through Django Admin on the Render site,
     Tested Billing Admin and Account Manager login and confirmed that the live application was working,
     ----------Updated all the doc in github-------------------------
-    
-                                                        -------------------------------------------------------
+    Made the complete site mobile responsive. 
+    Corrected the credit note error. 
+    Restricted the subscription owner power from account manager. 
+    Added archive page just for billing admin with restore and archive option. 
+     added the collaborator column in the subscription table. 
+    -----pushed all to GitHub. 
 
-- What did you estimate versus what it actually took?
+
+                                                        -------------------------------------------------------------------
+
+- ## What did you estimate versus what it actually took?
 ##
-I initially estimated that I could complete 2 tasks per day and finish all 10 tasks in 5 days, leaving the last 2 days strictly for hosting and testing.
+-I initially estimated that I could complete 2 tasks per day and finish all 10 tasks in 5 days, leaving the last 2 days strictly for hosting and testing. In total it 17 hours. I initially estimated 12 hours to complete all 10 tasks, but the project actually took 5 additional hours, so I would say I spent approximately 17 hours in total.
 
-The actual work took a little more time than I initially expected because some features needed rechecking, correcting, and refining after implementation. The collaboration, Owner, Archive, permissions, invoice visibility, and dashboard styling required additional changes because I found issues while testing the system. So, the basic plan was the same, but some tasks took longer because I did not want to blindly accept the first implementation without checking whether it actually matched my requirements.
+-The actual work took a little more time than I initially expected because some features needed rechecking, correcting, and refining after implementation. The collaboration, Owner, Archive, permissions, invoice visibility, and dashboard styling required additional changes because I found issues while testing the system. So, the basic plan was the same, but some tasks took longer because I did not want to blindly accept the first implementation without checking whether it actually matched my requirements.
 
                                                     --------------------------------------------------------------
-- What did you cut when you ran short?
+- ## What did you cut when you ran short?
 ##
 When I ran short on time, I decided to prioritize the core working features and hosting rather than trying to force every remaining feature into the project.
 
