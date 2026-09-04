@@ -242,10 +242,19 @@
     }
         </style>
 </head>
-<body><div class="sidebar"><h3>Invoice_G</h3><div class="role">{% if user.is_superuser %}Billing Admin{% else %}Account Manager ({{ user.first_name }}){% endif %}</div><a href="{% url 'admin_dash' %}">Dashboard</a><a href="{% url 'subs_tab' %}">Subscriptions</a><a href="{% url 'invoice_list' %}">Invoices</a><div class="logout"><a href="{% url 'logout' %}">Logout</a></div></div>
-<!-- Navbar (Fixed and always visible) -->
-
-<!-- Sidebar (Pushes content, appears below navbar) -->
+<body>    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Invoice_G</h3>
+        <div class="role">
+            {% if user.is_superuser %}Billing Admin{% else %}Account Manager ({{ user.first_name }}){% endif %}
+        </div>
+        <a href="{% url 'admin_dash' %}">Dashboard</a>
+        <a href="{% url 'subs_tab' %}">Subscriptions</a>
+        <a href="{% url 'view_archived_subscriptions' %}">Archived Subscriptions</a>
+        <a href="{% url 'invoice_list' %}">Invoices</a>
+        <div class="logout"><a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
 
 <!-- Main Content -->
 <main class="main-content">
