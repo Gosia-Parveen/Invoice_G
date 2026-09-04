@@ -179,13 +179,68 @@
         }
         .dismiss-alert-btn:hover { background: #8f0001; }
 
+        /* ---------- MOBILE RESPONSIVENESS ---------- */
         @media (max-width: 768px) {
-            .sidebar { width: 190px; }
-            .main-content { margin-left: 190px; padding: 20px; }
-            .overdue-alert { flex-direction: column; align-items: flex-start; }
-            .invoice-details { flex-direction: column; gap: 5px; }
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+            padding: 15px 12px;
         }
-    </style>
+
+        .sidebar h3 {
+            font-size: 22px;
+        }
+
+        .sidebar .role {
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            padding: 10px 12px;
+            margin-bottom: 5px;
+        }
+
+        .logout {
+            position: static;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 15px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .overdue-alert-box {
+            padding: 15px;
+        }
+
+        .overdue-alert-header {
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .overdue-alert {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .invoice-details {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .dismiss-alert-btn {
+            width: 100%;
+        }
+    }
+        </style>
 </head>
 <body><div class="sidebar"><h3>Invoice_G</h3><div class="role">{% if user.is_superuser %}Billing Admin{% else %}Account Manager ({{ user.first_name }}){% endif %}</div><a href="{% url 'admin_dash' %}">Dashboard</a><a href="{% url 'subs_tab' %}">Subscriptions</a><a href="{% url 'invoice_list' %}">Invoices</a><div class="logout"><a href="{% url 'logout' %}">Logout</a></div></div>
 <!-- Navbar (Fixed and always visible) -->
