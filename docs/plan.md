@@ -81,7 +81,7 @@ I have divided the 10 task according to the days given, so i plan on completing 
 ##
 - When I ran short on time, I decided to prioritize the core working features and hosting rather than trying to force every remaining feature into the project.
 
-- I left out Generating invoices in bulk and History you cannot rewrite. I had not completely understood these two tasks, and I did not want to depend completely on AI to build something that I would not be able to properly understand or recheck.
+- I left out Generating invoices in bulk and History you cannot rewrite ** task 7 & task 9 **. I had not completely understood these two tasks, and I did not want to depend completely on AI to build something that I would not be able to properly understand or recheck.
 
 - I also kept the last two days strictly for hosting and testing, because having a working and hosted project was more important to me than adding features at the last moment and risking the stability of the whole system.
 
