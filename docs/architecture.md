@@ -80,6 +80,8 @@ If I had been given more time, I would have completed them as well.
                                           |   |-Add New                                  |  |-Add New
                                           |   |-Edit existing                            |  |-Edit existing
                                           |   |-Archive/Restore                          |
+                                          |-Archive Subscriptions                        |
+                                          |   |-Restore                                  |
                                           |-Invoice                                      |-Invoice
                                           |   |-Add New                                  |  |-Add New
                                           |   |-Edit existing                            |  |-Edit existing
